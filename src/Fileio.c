@@ -3,9 +3,9 @@
 void Banner(){
 	print("Beep");
 }
-int ReadStationFile(Station *Stn, char STNFIL){
+/*int ReadStationFile(Station *Stn, char STNFIL){
 	return 0;
-}
+}*/
 /*Returns a struct with the parameters defined below. This function reads the station
 parameters file and returns the values in degrees and meters for geographical coordinates,
 degrees for az/el limits and deg/min for maximum az/el speeds. Use for test:*/
