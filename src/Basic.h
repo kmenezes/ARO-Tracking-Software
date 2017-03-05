@@ -1,20 +1,14 @@
-#ifndef BASIC_H
-#define BASIC_H
+/*
+ * Basic.h
+ *
+ *  Created on: Mar 3, 2017
+ *      Author: james
+ */
 
-#define PI 3.14159265
-
+#ifndef BASIC_H_
+#define BASIC_H_
 double sinm1(double ARG);
-
 double cosm1(double ARG);
-
 double frac(double ARG);
-
-double fixang(double ang_in);
-
-double cosm1(double ARG);
-
-double frac(double ARG);
-
-double fixang(double ang_in);
-
+double fixang(double ARG);
 #endif
