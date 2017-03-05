@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "Basic.h"
+/*#include "Matrix.h"*/
+#include <math.h>
 
 
 int main()
@@ -24,5 +26,10 @@ int main()
 	printf("************Completed Test for Sinm1************\n");
 	printf("********************************\n");
 
-	return 0;
+
+	printf("********Create new Matrix************\n");
+
+
+
+
 }

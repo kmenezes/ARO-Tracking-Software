@@ -1,7 +1,7 @@
 #include "Fileio.h"
 
 void Banner(){
-	print("Beep");
+	puts("Beep");
 }
 /*int ReadStationFile(Station *Stn, char STNFIL){
 	return 0;
@@ -27,9 +27,9 @@ typedef struct Station {
 	double st_el_speed_max = 5.0;
 } Station;
 #endif
-int ReadNoradTLE(Satellite *sat, char line0, char line1, char line2){
+/*int ReadNoradTLE(Satellite *sat, char line0, char line1, char line2){
 	return 0;
-}
+}*/
 /*Satellite is a struct defined as below:*/
 #ifdef Satdef
 #def Satdef

@@ -26,7 +26,7 @@ double magntd(struct Vector VECTR){
 int mycross(Vector *v3, Vector *v1, Vector *v2){
 	if(v3 == NULL)
 	{
-		print("v3 is null");
+		puts("v3 is null");
 		return NULL;
 	}
 	else{
