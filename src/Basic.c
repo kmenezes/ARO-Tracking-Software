@@ -1,36 +1,47 @@
+/*
+ * Basic.c
+ *
+ *  Created on: Mar 3, 2017
+ *      Author: james
+ */
 #include <stdio.h>
-#include "Basic.h"
-#include "Vector.h"
-#include "Datefun.h"
 #include <math.h>
 
 
-double sinm1(double ARG) {
-	if(abs(ARG) <= 1){
-		return asin(ARG);
-	}
-	if(abs(ARG) >= 1){
-		return PI;
-	}
+
+double cosm1(double ARG)
+{
+ if (ARG >= 1)
+  return 3.141592653589793238462643383279502884197169399375105820974944592307816406286 /2;
+  else if (ARG <= -1)
+  return -1*3.141592653589793238462643383279502884197169399375105820974944592307816406286 /2;
+  else
+  return acos(ARG);
 }
-
-double cosm1(double ARG){
-	if(abs(ARG) <= 1){
-		return acos(ARG);
-	}
-	if(abs(ARG) >= 1){
-		return 0;
-	}
+double fixang(double ARG)
+{
+ for (;ARG > 3.141592653589793238462643383279502884197169399375105820974944592307816406286 *2;){
+	 ARG = ARG - 3.141592653589793238462643383279502884197169399375105820974944592307816406286 *2;
+ }
+ return ARG;
 }
-
-double frac(double ARG){
-	int intpart = (int)ARG;
-	double decpart = ARG - intpart;
-	return decpart;
+double sinm1(double ARG)
+{
+ if (ARG >= 1)
+  return 3.141592653589793238462643383279502884197169399375105820974944592307816406286 /2;
+  else if (ARG <= -1)
+  return -1*3.141592653589793238462643383279502884197169399375105820974944592307816406286 /2;
+  else
+  return asin(ARG);
 }
-
-double fixang(double ang_in){
-	return ang_in - 2*PI;
+double frac (double ARG)
+{
+ if (ARG > 0) {
+	for (;ARG >= 1;)
+	{ARG = ARG - 1;}
+ 	return ARG;}
+ else{
+ 	for (;ARG <= -1;)
+ 	{ARG = ARG + 1;}
+ 	return ARG;}
 }
-
-
