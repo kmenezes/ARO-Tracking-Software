@@ -2,7 +2,7 @@
  * Matrix.c
  *
  *  Created on: Mar 4, 2017
- *      Author: james/keith
+ *      Author: james
  */
 
 #include "Matrix.h"
