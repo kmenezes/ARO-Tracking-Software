@@ -8,6 +8,9 @@
 #ifndef PROPAGATE_H_
 #define PROPAGATE_H_
 
+double trueanom(double eccentricity, double E);
+
+
 /* For a full description of this function,  see KEPLER.HTM on the Guide
 Web site,  http://www.projectpluto.com.  There was a long thread about
 solutions to Kepler's equation on sci.astro.amateur,  and I decided to
@@ -15,8 +18,6 @@ go into excruciating detail as to how it's done below. */
 
 
 double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
-
-
 
 /*
  * Functions to write satellite time, position and velocity resolved into a particular
@@ -41,9 +42,8 @@ Vector *sat_ecf_velocity, double station_longitude,
 double station_latitude);
 
 //Function to find the current station position in ECF coordinates.
-int station_ECF(Vector stn_ecf_position,
-double station_longitude, double station_latitude,
-double station_elevation);
+int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
+
 
 
 // Function to calculate the current satellite position and velocity in ECF coordinates.

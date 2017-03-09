@@ -9,12 +9,52 @@
 #include "Propagate.h"
 #include "Vector.h"
 #include "DateAndTimeCalculations.h"
+#include "Matrix.h"
 typedef enum {false,true} boolean;
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923
 #define MAX_ITERATIONS 7
 #define THRESH 1.e-12
 #define MIN_THRESH 1.e-15
 #define CUBE_ROOT( X)  (exp( log( X) / 3.))
+
+int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
+	double X, Y, Z, n, a, e2, f;
+	f=1/298.257223563;
+	//Convert lat and long to radians
+
+	e2=2*f-f*f;
+	a=6378137;
+	n=a/(sqrt(1-e2*sin(station_latitude)*sin(station_latitude)));
+	X=(n+station_elevation)*cos(station_latitude)*cos(station_longitude);
+	Y=(n+station_elevation)*cos(station_latitude)*sin(station_longitude);
+	Z=(n*(1-e2)+station_elevation)*sin(station_latitude);
+	stn_ECF_pos->x=X;
+	stn_ECF_pos->y=Y;
+	stn_ECF_pos->z=Z;
+	stn_ECF_pos->mag=magntd(*stn_ECF_pos);
+	return 0;
+}
+
+
+/*int sat_ECI(Vector *eci_position, Vector *eci_velocity,
+		double eccentricity, double ecc_anomaly, double a_semi_major_axis,
+		double omega_longitude_ascending_node, double omega_argument_periapsis,
+		double inclination, double nt_mean_motion){
+	//double trueanom = trueanom(eccentricity, ecc_anomaly);
+	//argument of perigee
+	//
+
+
+	return 0;
+}*/
+
+double trueanom(double eccentricity, double E){
+	double S = sin(E);
+	double C = cos(E);
+	double fucking = sqrt(1.0 - eccentricity*eccentricity);
+	double bitch = atan2(fucking*S,C - eccentricity);
+	return bitch;
+}
 
 //nt_mean_motion at time t
 //ts = start time from TLE
@@ -27,6 +67,7 @@ int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
 		double n_2dots_mean_motion){
 
 	//not sure what time is being input as ??? assumes it inputs julian dates
+	// needs to be julian
 	double timeinterval = time - ts_sat_epoch;
 
 	double M0_mean_anomaly_rad = M0_mean_anomaly * (PI/180);
@@ -42,25 +83,6 @@ int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
 	printf("\n The current mean motion is %f \n", newangle);
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
