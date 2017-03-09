@@ -41,10 +41,6 @@ Vector station_body_position, Vector *sat_ecf_position,
 Vector *sat_ecf_velocity, double station_longitude,
 double station_latitude);
 
-//Function to find the current station position in ECF coordinates.
-int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
-
-
 
 // Function to calculate the current satellite position and velocity in ECF coordinates.
 int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity,

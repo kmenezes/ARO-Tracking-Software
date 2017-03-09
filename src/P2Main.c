@@ -6,6 +6,7 @@
 #include "Vector.h"
 #include "DateAndTimeCalculations.h"
 #include "Matrix.h"
+#include "Vector.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,20 @@ int main(){
 	printf("------------------------------------------\n");
 	printf("\n Welcome to P2 by James and Keith\n\n");
 	printf("------------------------------------------\n");
+
+	printf("------------Test the Station ecf----------------\n");
+
+
+	Vector *s;
+		s=(Vector*)malloc(2*sizeof(Vector));
+		s->x=0;
+		s->y=0;
+		s->z=0;
+
+		station_ECF(s, 45, 45, 45);
+		printf("station_ECF:  X=%f  Y=%f  Z=%f", s->x, s->y, s->z);
+
+		printf("------------------------------------------\n");
 
 	printf("------------------------------------------\n");
 	printf("Testing Kepler's Equation\n");

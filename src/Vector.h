@@ -17,3 +17,4 @@ double magntd(struct Vector VECTR);
 int mycross(Vector*v3,Vector*v1,Vector*v2);
 int vecadd(Vector*v3,Vector*v1,Vector*v2);
 #endif
+int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation);

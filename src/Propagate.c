@@ -17,23 +17,9 @@ typedef enum {false,true} boolean;
 #define MIN_THRESH 1.e-15
 #define CUBE_ROOT( X)  (exp( log( X) / 3.))
 
-int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
-	double X, Y, Z, n, a, e2, f;
-	f=1/298.257223563;
-	//Convert lat and long to radians
 
-	e2=2*f-f*f;
-	a=6378137;
-	n=a/(sqrt(1-e2*sin(station_latitude)*sin(station_latitude)));
-	X=(n+station_elevation)*cos(station_latitude)*cos(station_longitude);
-	Y=(n+station_elevation)*cos(station_latitude)*sin(station_longitude);
-	Z=(n*(1-e2)+station_elevation)*sin(station_latitude);
-	stn_ECF_pos->x=X;
-	stn_ECF_pos->y=Y;
-	stn_ECF_pos->z=Z;
-	stn_ECF_pos->mag=magntd(*stn_ECF_pos);
-	return 0;
-}
+
+
 
 
 /*int sat_ECI(Vector *eci_position, Vector *eci_velocity,
