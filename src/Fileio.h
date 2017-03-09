@@ -4,7 +4,6 @@
  *  Created on: Mar 2, 2017
  *      Author: james
  */
-
 typedef struct Station {
 	char *name;
 	double stnlat;
