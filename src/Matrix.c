@@ -53,6 +53,8 @@ int mult(Matrix *M3,Matrix *M1 ,Matrix *M2){
 				sum=0;
 				if(i==maxi){
 					if(k==maxj){
+						// need to update the rows and columns of M1 and M2
+						M3->row = M2->row;M3->column = M2->column;
 						return 0;
 					}
 					k=k+1;

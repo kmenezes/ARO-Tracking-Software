@@ -27,11 +27,10 @@ int main(){
 	printf("\nTesting Theta - J and N \n");
 	printf("------------------------------------------\n");
 
-	//Satellite *sat = (Satellite*) malloc(sizeof(Satellite));
-	//	ReadNoradTLE(sat, '0','1','2');
-	printf("\nUsing the test value from the TLE Epoch %f\n",05054.71335794);
-	//double number = sat->refepoch;
-	double think = THETAN(05054.71335794);
+	printf("\nUsing the test value from the TLE Epoch: %f\n",05054.71335794);
+	// 05054.71335794
+	double value = 05054.71335794;
+	double think = THETAN(value);
 	printf("\nThe result of  %f\n", think);
 	printf("\nThe result should print 2.67 \n ");
 
@@ -73,9 +72,11 @@ int main(){
 	// testing mean anomaly motion
 	// 	//double ans =  mean_anomaly_motion (Mt_mean_anomaly,  nt_mean_motion, time,  ts_sat_epoch,
 	// M0_mean_anomaly, n_mean_motion, n_dot_mean_motion, n_2dots_mean_motion)
-	double mean_anom, mean_motion;
-	double ans =  mean_anomaly_motion(mean_anom,  mean_motion, 50,  50, 50, 50, 50, 50);
-	printf("%f %f\n", mean_anom, mean_motion);
+	printf("\n------------Test Mean Anomaly Motion----------------\n");
+	//double mean_anom, mean_motion;
+	//double ans =  mean_anomaly_motion(mean_anom,  mean_motion, 50,  50, 50, 50, 50, 50);
+	//printf("%f %f\n", mean_anom, mean_motion);
+	printf("------------------------------------------\n");
 
 	printf("\n------------Test the Station ECF----------------\n");
 	Vector *s;
@@ -86,13 +87,11 @@ int main(){
 
 	station_ECF(s, 45, 45, 45);
 	printf("\n Station_ECF with inputs of station_ECF(s, 45, 45, 45) returns:  X=%f  Y=%f  Z=%f \n", s->x, s->y, s->z);
-	printf("The result should be [3194441.730512,3194441.644917,487380.168350] as confirmed with an online calculator \n");
+	printf("\n The result should be ECEF from Latitude,Longitude, Height (ellipsoidal) X : 3194.442   km, Y : 3194.442   km, Z : 4487.38   km\n");
+	printf("\n as confirmed with an online calculator http://www.oc.nps.edu/oc2902w/coord/llhxyz.htm \n");
+	printf("\n------------------------------------------\n");
 
-
-
-
-	/*
-	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+/*	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	int size = 10;
 	char coordinatesys[] = "J2000";
 	struct Vector p[size];

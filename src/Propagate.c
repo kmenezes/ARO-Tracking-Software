@@ -7,9 +7,17 @@
 #include <stdio.h>
 #include <math.h>
 #include "Propagate.h"
+#include "Basic.h"
+#include "FileIO.h"
 #include "Vector.h"
+#include "STKout.h"
 #include "DateAndTimeCalculations.h"
 #include "Matrix.h"
+#include "Vector.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 typedef enum {false,true} boolean;
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923
 #define MAX_ITERATIONS 7
@@ -23,17 +31,18 @@ double THETAN(double TLEepoch){
 	double num = TLEepoch;
 
 	num = TLEepoch/1000;
-	printf("%f\n",num);
+	//printf("%f\n",num);
 
 	double year = num - frac(num);
+	//printf("%f\n",year);
 	double day = TLEepoch - year*1000;
 	double yearf = year + 2000;
-	printf("%f\n",yearf);
+	//printf("%f\n",yearf);
 	double JDy = jdaty(yearf);
 	double JD = JDy + day -1;
 	double rads = THETAJ(JD);
-	printf("%f\n",JD);
-	printf("%f\n",rads);
+	//printf("%f\n",JD);
+	//printf("%f\n",rads);
 	return rads;
 
 
@@ -81,14 +90,12 @@ int range_topo2look_angles(double azimuth, double elevation, double azimuth_velo
 }
 
 
-
-
 double trueanom(double eccentricity, double E){
 	double S = sin(E);
 	double C = cos(E);
-	double fucking = sqrt(1.0 - eccentricity*eccentricity);
-	double bitch = atan2(fucking*S,C - eccentricity);
-	return bitch;
+	double var = sqrt(1.0 - eccentricity*eccentricity);
+	double true = atan2(var*S,C - eccentricity);
+	return true;
 }
 
 //nt_mean_motion at time t
@@ -114,8 +121,12 @@ int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
 
 	double M_at_t = M0_mean_anomaly_rad + n_mean_motion_rad_p_s*timeinterval + (n_dot_mean_motion_rad_p_s/2)*(timeinterval)*(timeinterval) + (n_2dots_mean_motion_rad_p_s/6)*(timeinterval)*(timeinterval)*(timeinterval);
 
-	double newangle = fixang(M_at_t);
-	//printf("\n The current mean motion is %f \n", newangle);
+	double n_at_t = n_mean_motion_rad_p_s
+
+	Mt_mean_anomaly = M_at_t;
+	nt_mean_motion = fixang(M_at_t);
+
+	printf("%f\n",nt_mean_motion );printf("%f\n",Mt_mean_anomaly );
 	return 0;
 }
 
@@ -187,7 +198,7 @@ Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
 
 	range_topo_velocity->x = T.matrix[0][0]*sat_ecf_velocity->x + T.matrix[0][1]*sat_ecf_velocity->y + T.matrix[0][2]*sat_ecf_velocity->z;
 	range_topo_velocity->y = T.matrix[1][0]*sat_ecf_velocity->x + T.matrix[1][1]*sat_ecf_velocity->y + T.matrix[1][2]*sat_ecf_velocity->z;
-	range_topo_velocity->y = T.matrix[2][0]*sat_ecf_velocity->x + T.matrix[2][1]*sat_ecf_velocity->y + T.matrix[2][2]*sat_ecf_velocity->z;
+	range_topo_velocity->z = T.matrix[2][0]*sat_ecf_velocity->x + T.matrix[2][1]*sat_ecf_velocity->y + T.matrix[2][2]*sat_ecf_velocity->z;
 
 	return 0;
 }
