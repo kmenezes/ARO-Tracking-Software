@@ -115,7 +115,7 @@ int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
 	double M_at_t = M0_mean_anomaly_rad + n_mean_motion_rad_p_s*timeinterval + (n_dot_mean_motion_rad_p_s/2)*(timeinterval)*(timeinterval) + (n_2dots_mean_motion_rad_p_s/6)*(timeinterval)*(timeinterval)*(timeinterval);
 
 	double newangle = fixang(M_at_t);
-	printf("\n The current mean motion is %f \n", newangle);
+	//printf("\n The current mean motion is %f \n", newangle);
 	return 0;
 }
 

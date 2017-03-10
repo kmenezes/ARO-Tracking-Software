@@ -4,6 +4,7 @@
 #include "Basic.h"
 #include "FileIO.h"
 #include "Vector.h"
+#include "STKout.h"
 #include "DateAndTimeCalculations.h"
 #include "Matrix.h"
 #include "Vector.h"
@@ -15,137 +16,99 @@
 
 int main(){
 	printf("------------------------------------------\n");
-	printf("\n Welcome to P2 by James and Keith\n\n");
+	printf("\nWelcome to P2 by James and Keith\n\n");
 	printf("------------------------------------------\n");
 
-	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-		int size = 10;
-		//char centralbody[] = "Earth";
-		char coordinatesys[] = "J2000";
-		struct Vector p[size];
-		struct Vector v[size];
-		for(int i=0; i<size; i++){
-			p[i].x = i+100;
-			p[i].y = i+100;
-			p[i].z = i+100;
-		}
-		for(int i=0; i<size; i++){
-			v[i].x = i+100;
-			v[i].y = i+100;
-			v[i].z = i+100;
-	 	}
-
-		STKout(t, size, coordinatesys, p, v);
-/*
-struct Vector position[2];
-struct Vector velocity[2];
-
-	Vector position[2] = {
-			{ x: 1, y: 1, z: 0, mag: 1 },
-			{ x: 1, y: 1, z: 0, mag: 1 },{ x: 1, y: 1, z: 0, mag: 1 },
-	};
-
-	Vector velocity[2] = {
-			{ x: 1, y: 1, z: 0, mag: 1 },
-			{ x: 1, y: 1, z: 0, mag: 1 },{ x: 1, y: 1, z: 0, mag: 1 },
-	};
-*/
-
-/*
-	Vector *p1;
-	p1=(Vector*)malloc(2*sizeof(Vector));
-	p1->x=1;
-	p1->y=2;
-	p1->z=3;
-	Vector *p2;
-	p2=(Vector*)malloc(2*sizeof(Vector));
-	p2->x=3;
-	p2->y=4;
-	p2->z=5;
-	Vector *v1;
-	v1=(Vector*)malloc(2*sizeof(Vector));
-	v1->x=1;
-	v1->y=2;
-	v1->z=3;
-	Vector *v2;
-	v2=(Vector*)malloc(2*sizeof(Vector));
-	v2->x=3;
-	v2->y=4;
-	v2->z=5;
-*/
-
-	/*	Vector pos[2] = {p1, p2};
-	Vector vel[2] = {v1, v2};*/
-//	Matrix mB;
-//	Matrix mC;
-/*
-	zero(&mB,1);
-	zero(&mC,1);
-	mB.matrix[0] = p1; mB.matrix[1] = p1;
-	mC.matrix[0] = v1; mC.matrix[1] = v2;
-*/
-	//char Earth = "Earth";
-/*
-	double time[2] = {01012010, 01022010};
-	STKout(*time, 1, "Earth", *position, *velocity);*/
-	/*
-	printf("------------Test the Station ecf----------------\n");
-
-
-	Vector *s;
-		s=(Vector*)malloc(2*sizeof(Vector));
-		s->x=0;
-		s->y=0;
-		s->z=0;
-
-		station_ECF(s, 45, 45, 45);
-		printf("station_ECF:  X=%f  Y=%f  Z=%f", s->x, s->y, s->z);
-
-		printf("------------------------------------------\n");
+	printf("\nTesting AnyKey() -- You must press ENTER to continue \n");
+	anykey();
+	printf("\nAnykey Works\n");
 
 	printf("------------------------------------------\n");
-	printf("Testing Kepler's Equation\n");
-	printf("----------------------\n");
-	printf("---------85.943699980374-------------\n");
+	printf("\nTesting Theta - J and N \n");
+	printf("------------------------------------------\n");
+
+	//Satellite *sat = (Satellite*) malloc(sizeof(Satellite));
+	//	ReadNoradTLE(sat, '0','1','2');
+	printf("\nUsing the test value from the TLE Epoch %f\n",05054.71335794);
+	//double number = sat->refepoch;
+	double think = THETAN(05054.71335794);
+	printf("\nThe result of  %f\n", think);
+	printf("\nThe result should print 2.67 \n ");
+
+	//tests for keplers
+	printf("------------------------------------------\n");
+	printf("\nTesting Keplers Equation \n");
+	printf("------------------------------------------\n");
 	double ecc,ecc2,ecc3,ecc4;
-	printf("\nTesting Circular Mean anom = 3.6029 and Ecc = 0.0\n");
+	printf("\nTesting Keplers Eqn for Circular Orbit for Mean anom = 3.6029 and Ecc = 0.0\n");
+	printf("------------------------------------------\n");
 	ecc = KeplerEqn(3.6029,0.0);
-	printf("%f\n" ,ecc);
-
-	printf("\nFor circular it should result in the mean anom-------\n");
-
-	printf("\nTesting eccentric Mean anom = 3.6029 = 206.430964 degrees and Ecc = 0.37255----in radians\n");
+	printf("\n %f\n" ,ecc);
+	printf("\nFor circular it should result in the mean anom 3.6029 \n");
+	printf("\n------------------------------------------\n");
+	printf("\nTesting Kepler for eccentric Mean anom = 3.6029 = 206.430964 degrees and Ecc = 0.37255 \n");
 	ecc2 = KeplerEqn(3.6029,0.37255);
-	printf("%f\n" ,ecc2);
-
-	printf("\n----------------------\n");
-
-
-	double true = trueanom(0.37255, ecc2);
-	printf("\n-----here come the cunt------------\n");
-	printf("%f\n" ,true);
-	printf("\n----------------------\n");
-
-
-	printf("\nshould result in 199.35619827991917 or 3.4794220442346146527 rads\n");
-
-	printf("\nTesting Elliptic Mean anom =1.5 and Ecc = 0.8\n");
+	printf("\nKeplerEqn(3.6029,0.37255) returned: %f\n" ,ecc2);
+	printf("\nThe result should be in 199.35619827991917 degrees or 3.4794220442346146527 rads\n");
+	printf("\n------------------------------------------\n");
+	printf("\nTesting Kepler Elliptic orbit for Mean anom =1.5 and Ecc = 0.8\n");
+	printf("------------------------------------------\n");
 	ecc3 = KeplerEqn(1.5,0.8);
-	printf("%f\n" ,ecc3);
-	printf("\n Should result in 2.1635326743829743634 or 123.96129108110373807 degrees");
-
-	printf("Testing Parabolic orbit Mean anom = 1.5 and Ecc = 1.0\n");
+	printf("\nKeplerEqn(1.5,0.8) returned: %f\n" ,ecc3);
+	printf("\nShould result in 2.1635326743829743634 or 123.96129108110373807 degrees \n");
+	printf("\n------------------------------------------\n");
+	printf("\nTesting Parabolic orbit Mean anom = 1.5 and Ecc = 1.0\n");
+	printf("------------------------------------------\n");
 	ecc4 = KeplerEqn(1.5,1.0);
-	printf("%f\n" ,ecc4);
-
-	printf("\nTesting Hyperbolic Mean anom = 40.69 and Ecc =  2.7696-------\n");
+	printf("\nKeplerEqn(1.5,1.0) returns:  %f\n" ,ecc4);
+	printf("Result should be 1.952623\n");
+	printf("\n------------------------------------------\n");
+	printf("\nTesting Hyperbolic Mean anom = 40.69 and Ecc =  2.7696 \n");
+	printf("------------------------------------------\n");
 	ecc = KeplerEqn(40.69, 2.7696);
-	printf("%f\n" ,ecc);
-	printf("\n should return Hyperbolic eccentric anomaly = 3.46309--------------------\n");*/
+	printf("\nKeplerEqn(40.69, 2.7696) returned: %f\n" ,ecc);
+	printf("\nshould return Hyperbolic eccentric anomaly = 3.46309\n");
+	printf("------------------------------------------\n");
 
-	//	printf("----------------------\n");	printf("----------------------\n");	printf("----------------------\n");
-	//double ans =  mean_anomaly_motion (Mt_mean_anomaly,  nt_mean_motion, time,  ts_sat_epoch, M0_mean_anomaly, n_mean_motion, n_dot_mean_motion, n_2dots_mean_motion);
+	// testing mean anomaly motion
+	// 	//double ans =  mean_anomaly_motion (Mt_mean_anomaly,  nt_mean_motion, time,  ts_sat_epoch,
+	// M0_mean_anomaly, n_mean_motion, n_dot_mean_motion, n_2dots_mean_motion)
+	double mean_anom, mean_motion;
+	double ans =  mean_anomaly_motion(mean_anom,  mean_motion, 50,  50, 50, 50, 50, 50);
+	printf("%f %f\n", mean_anom, mean_motion);
 
+	printf("\n------------Test the Station ECF----------------\n");
+	Vector *s;
+	s=(Vector*)malloc(2*sizeof(Vector));
+	s->x=0;
+	s->y=0;
+	s->z=0;
+
+	station_ECF(s, 45, 45, 45);
+	printf("\n Station_ECF with inputs of station_ECF(s, 45, 45, 45) returns:  X=%f  Y=%f  Z=%f \n", s->x, s->y, s->z);
+	printf("The result should be [3194441.730512,3194441.644917,487380.168350] as confirmed with an online calculator \n");
+
+
+
+
+	/*
+	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int size = 10;
+	char coordinatesys[] = "J2000";
+	struct Vector p[size];
+	struct Vector v[size];
+	for(int i=0; i<size; i++){
+		p[i].x = i+100;
+		p[i].y = i+100;
+		p[i].z = i+100;
+	}
+	for(int i=0; i<size; i++){
+		v[i].x = i+100;
+		v[i].y = i+100;
+		v[i].z = i+100;
+	}
+	int a = STKout(t, size, coordinatesys, p, v);
+	printf("%d",a);*/
 	return 0;
 }
 

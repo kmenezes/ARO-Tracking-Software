@@ -7,6 +7,7 @@
 #include "Vector.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 int STKout(double *time, int size_time_array, char Coordinatesystem, Vector *position, Vector *velocity){
 

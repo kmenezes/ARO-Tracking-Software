@@ -32,7 +32,7 @@ int mult(Matrix *M3,Matrix *M1 ,Matrix *M2){
 	int g = 0;
 	double sum1;
 	double sum2;
-	double sum = 0;
+	//double sum = 0;
 	int maxi = M1->row-1;
 	int maxj = M2->column-1;
 	if(maxi!=maxj){
