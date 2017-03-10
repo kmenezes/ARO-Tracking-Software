@@ -8,24 +8,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int STKout(char outfile, char EphemFile, char StartString, double time,
-Vector *Coord, Vector *position, Vector *velocity){
-	   FILE * fp;
+int STKout(double *time, int size_time_array, char Coordinatesystem, Vector *position, Vector *velocity){
 
-	   fp = fopen ("STKout.e", "w+");
-	   fprintf(fp, "%s", "stk.v.11\n");
-	   fprintf(fp, "%s","%d\n", "NumberOfEphemerisPoints", 570);
-	   fprintf(fp, "%s", "%d\n", "ScenarioEpoch	", time);
-	   fprintf(fp,"%s", "%s", "InterpolationMethod	", "Lagrange\n" );
-	   fprintf(fp,"%s", "%s", "CentralBody	", "Earth\n" );
-	   fprintf(fp,"%s", "%s", "CoordinateSystem	", "J2000\n" );
-	   fprintf(fp, "\n");
-	   fprintf(fp,"%s", "EphemerisTimePosVel");
+	FILE * fp;
+	fp = fopen ("STKout.e", "w+");
+	fprintf(fp, "%s", "stk.v.11\n");
+	fprintf(fp, "\n BEGIN Ephemeris\n");
+	fprintf(fp,"\n NumberOfEphemerisPoints	%d\n", size_time_array);
+	// get number of rows in time matrix
+	fprintf(fp,"\n ScenarioEpoch	%f\n", time[0]);
+	fprintf(fp,"InterpolationMethod	Lagrange\n" );
+	fprintf(fp, "CentralBody	Earth\n");
+	fprintf(fp,"CoordinateSystem	%s\n", Coordinatesystem);
+	fprintf(fp, "\n");
+	fprintf(fp,"%s", "EphemerisTimePosVel\n\n");
+	//time array // each of the times the position. velocity
+	for(int i = 0 ; i < size_time_array ; i++){
+		fprintf(fp,"%f %f %f %f %f %f %f\n", time[i], position[i].x, position[i].y, position[i].z, velocity[i].x, velocity[i].y, velocity[i].z);
+	}
+	fclose(fp);
 
-
-
-	   fclose(fp);
-
-	   return(0);
+	return(0);
 }
-

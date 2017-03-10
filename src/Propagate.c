@@ -18,21 +18,70 @@ typedef enum {false,true} boolean;
 #define CUBE_ROOT( X)  (exp( log( X) / 3.))
 
 
+double THETAN(double TLEepoch){
+
+	double num = TLEepoch;
+
+	num = TLEepoch/1000;
+	printf("%f\n",num);
+
+	double year = num - frac(num);
+	double day = TLEepoch - year*1000;
+	double yearf = year + 2000;
+	printf("%f\n",yearf);
+	double JDy = jdaty(yearf);
+	double JD = JDy + day -1;
+	double rads = THETAJ(JD);
+	printf("%f\n",JD);
+	printf("%f\n",rads);
+	return rads;
 
 
+}
 
+double THETAJ (double JulianDate){
+	//NOT CORRECT?
+	double d = JulianDate - 2451545.0;
+	double T = d / 36525.0;
+	double GMSTd = 24110.54841 + 8640184.812866*T + 0.093104*T*T - 0.0000062*T*T*T;
+	double degrees = GMSTd;
+	for (;degrees > 86400;){
+			degrees = degrees - 86400;
+		}
+	double rads = (degrees*2*3.14159265359)/86400;
+	//double r = 1.002737909350795+(5.9006/100000000000)*T-(5.9/1000000000000000)*T*T;
+	double final = rads;// + r*2*3.14159265359;
+	return final;
+}
 
-/*int sat_ECI(Vector *eci_position, Vector *eci_velocity,
-		double eccentricity, double ecc_anomaly, double a_semi_major_axis,
-		double omega_longitude_ascending_node, double omega_argument_periapsis,
-		double inclination, double nt_mean_motion){
-	//double trueanom = trueanom(eccentricity, ecc_anomaly);
-	//argument of perigee
-	//
+int range_topo2look_angles(double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity){
+	azimuth=atan(range_topo_position->x/range_topo_position->y);
+	elevation=atan(range_topo_position->z/(sqrt(pow(range_topo_position->x, 2)+pow(range_topo_position->y, 2))));
+	azimuth=(azimuth*180)/PI;
+	elevation=(elevation*180)/PI;
+	Vector *rxy, *vxy;
+	rxy->x=range_topo_position->x;
+	rxy->y=range_topo_position->y;
+	rxy->z=0;
+	rxy->mag=magntd(*rxy);
+	vxy->x=range_topo_velocity->x;
+	vxy->y=range_topo_velocity->y;
+	vxy->z=0;
+	vxy->mag=magntd(*vxy);
+	range_topo_position->mag=magntd(*range_topo_position);
+
+	Vector *v;
+	int l=mycross(v, vxy, rxy);
+
+	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
+	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
 
 
 	return 0;
-}*/
+}
+
+
+
 
 double trueanom(double eccentricity, double E){
 	double S = sin(E);
@@ -111,6 +160,37 @@ double near_parabolic( const double ecc_anom, const double e)
 	return( rval);
 }
 
+int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position,
+Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
+
+	int m, n;
+	m=3;
+	n=3;
+
+	Matrix T;
+
+	zero(&T, m, n);
+
+	T.matrix[0][0] = -sin(station_longitude);
+	T.matrix[0][1] = cos(station_longitude);
+	T.matrix[0][2] = 0;
+	T.matrix[1][0] = -cos(station_longitude)*sin(station_latitude);
+	T.matrix[1][1] = -sin(station_longitude)*sin(station_latitude);
+	T.matrix[1][2] = cos(station_latitude);
+	T.matrix[2][0] = cos(station_longitude)*cos(station_latitude);
+	T.matrix[2][1] = sin(station_longitude)*cos(station_latitude);
+	T.matrix[2][2] = sin(station_latitude);
+
+	range_topo_position->x = T.matrix[0][0]*sat_ecf_position->x + T.matrix[0][1]*sat_ecf_position->y + T.matrix[0][2]*sat_ecf_position->z;
+	range_topo_position->y = T.matrix[1][0]*sat_ecf_position->x + T.matrix[1][1]*sat_ecf_position->y + T.matrix[1][2]*sat_ecf_position->z;
+	range_topo_position->z = T.matrix[2][0]*sat_ecf_position->x + T.matrix[2][1]*sat_ecf_position->y + T.matrix[2][2]*sat_ecf_position->z;
+
+	range_topo_velocity->x = T.matrix[0][0]*sat_ecf_velocity->x + T.matrix[0][1]*sat_ecf_velocity->y + T.matrix[0][2]*sat_ecf_velocity->z;
+	range_topo_velocity->y = T.matrix[1][0]*sat_ecf_velocity->x + T.matrix[1][1]*sat_ecf_velocity->y + T.matrix[1][2]*sat_ecf_velocity->z;
+	range_topo_velocity->y = T.matrix[2][0]*sat_ecf_velocity->x + T.matrix[2][1]*sat_ecf_velocity->y + T.matrix[2][2]*sat_ecf_velocity->z;
+
+	return 0;
+}
 
 
 double KeplerEqn(double Mt_mean_anomaly,const double eccentricity){

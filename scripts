@@ -20,8 +20,8 @@ int main(){
 
 	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 		int size = 10;
-		//char centralbody[] = "Earth";
-		char coordinatesys[] = "J2000";
+		char coord[] = "This is a coordinate System";
+
 		struct Vector p[size];
 		struct Vector v[size];
 		for(int i=0; i<size; i++){
@@ -35,7 +35,7 @@ int main(){
 			v[i].z = i+100;
 	 	}
 
-		STKout(t, size, coordinatesys, p, v);
+		STKout(t, size, coord, p, v);
 /*
 struct Vector position[2];
 struct Vector velocity[2];

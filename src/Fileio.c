@@ -27,6 +27,9 @@ void ERRMSG (char* STRING){
 	printf("%s\n", STRING);
 	exit(0);
 }
+void anykey(){
+system("pause");
+}
 int ReadStationFile(Station *Stn, char STNFIL) {
 	char name[128];
 	char *name_ptr;

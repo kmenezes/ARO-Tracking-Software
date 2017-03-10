@@ -19,14 +19,6 @@ go into excruciating detail as to how it's done below. */
 
 double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
 
-/*
- * Functions to write satellite time, position and velocity resolved into a particular
-Coordinate system. The function outputs the data to EphemFile in STK ephemeris
-format for checking purposes.
- * */
-int STKout(char outfile, char EphemFile, char StartString, double time,
-Vector *Coord, Vector *position, Vector *velocity);
-
 
 // Function to find the current satellite look-angles at the station position.
 int range_topo2look_angles(double azimuth, double elevation,

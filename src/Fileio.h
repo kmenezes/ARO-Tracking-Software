@@ -37,3 +37,4 @@ void Banner();
 void ERRMSG(char* STRING);
 int ReadStationFile(Station *Stn, char STNFIL);
 int ReadNoradTLE(Satellite *sat, char line0, char line1, char line2);
+void anykey();
