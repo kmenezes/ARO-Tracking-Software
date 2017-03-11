@@ -121,10 +121,9 @@ int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
 
 	double M_at_t = M0_mean_anomaly_rad + n_mean_motion_rad_p_s*timeinterval + (n_dot_mean_motion_rad_p_s/2)*(timeinterval)*(timeinterval) + (n_2dots_mean_motion_rad_p_s/6)*(timeinterval)*(timeinterval)*(timeinterval);
 
-	double n_at_t = n_mean_motion_rad_p_s
-
-	Mt_mean_anomaly = M_at_t;
-	nt_mean_motion = fixang(M_at_t);
+	//double n_at_t = n_mean_motion_rad_p_s;
+	Mt_mean_anomaly = fixang(M_at_t);
+	nt_mean_motion = n_mean_motion_rad_p_s + 2*(n_dot_mean_motion_rad_p_s/2)*timeinterval + 3*(n_2dots_mean_motion_rad_p_s/6)*timeinterval*timeinterval;
 
 	printf("%f\n",nt_mean_motion );printf("%f\n",Mt_mean_anomaly );
 	return 0;
@@ -202,7 +201,33 @@ Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
 
 	return 0;
 }
+int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, double ecc_anomaly, double a_semi_major_axis, double omega_longitude_ascending_node, double omega_argument_periapsis, double inclination, double nt_mean_motion){
 
+	double e, E, a, big_omega, w, i, n;
+	e = eccentricity;
+	E = ecc_anomaly;
+	a = a_semi_major_axis;
+	big_omega = omega_longitude_ascending_node;
+	w = omega_argument_periapsis;
+	i = inclination;
+	n = nt_mean_motion;
+
+	double f = 2*atan(sqrt((1+e)/(1-e))*tan(E/2)); // True anomaly
+	double f_dot = n*sqrt((1-pow(e,2)) / pow((1-e*cos(E)),2)); //First time derivative of True Anomaly
+
+	double r = (a*(1-pow(e,2)) / (1+e*cos(f))); //The spacecraft range
+	double v = (a*e*(1-pow(e,2))*sin(f)*f) / (pow((1+e*cos(f)),2)); //First time derivative of the spacecraft range
+
+	eci_position->x = r*(cos(big_omega)*cos(w+f)-sin(big_omega)*cos(i)*sin(w+f));
+	eci_position->y = r*(sin(big_omega)*cos(w+f)+cos(big_omega)*cos(i)*sin(w+f));
+	eci_position->z = r*(sin(i)*sin(w+f));
+	eci_velocity->x = v*(cos(big_omega)*cos(w+f)-sin(big_omega)*cos(i)*sin(w+f)) + r*f_dot*(-cos(big_omega)*sin(w+f)-sin(big_omega)*cos(i)*cos(w+f));
+	eci_velocity->y = v*(sin(big_omega)*cos(w+f)+cos(big_omega)*cos(i)*sin(w+f)) + r*f_dot*(-sin(big_omega)*sin(w+f)-cos(big_omega)*cos(i)*cos(w+f));
+	eci_velocity->z = v*(sin(i)*sin(w+f)) + r*f_dot*(sin(i)*cos(w+f));
+
+	return 0;
+
+}
 
 double KeplerEqn(double Mt_mean_anomaly,const double eccentricity){
 	double curr, err, thresh, offset = 0.0;
