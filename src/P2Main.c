@@ -15,7 +15,7 @@
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923
 
 int main(){
-
+/*
 	printf("------------------------------------------\n");
 	printf("\nWelcome to P2 by James and Keith\n\n");
 	printf("------------------------------------------\n");
@@ -126,15 +126,15 @@ int main(){
 	printf("%f\n", vrtv->x);
 	printf("%f\n", vrtv->y);
 	printf("%f\n", vrtv->z);
-	printf("------------------------------------------\n");
+	printf("------------------------------------------\n");*/
 
-
+	//STK out tester
 
 		double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	int size = 10;
 	char coordinatesys[] = "J2000";
-	struct Vector p[size];
-	struct Vector v[size];
+	struct Vector p[size];// p =(Vector*)malloc(sizeof(Vector));
+	struct Vector v[size];// v =(Vector*)malloc(sizeof(Vector));
 	for(int i=0; i<size; i++){
 		p[i].x = i+100;
 		p[i].y = i+100;
@@ -149,4 +149,19 @@ int main(){
 	printf("%d",a);
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
