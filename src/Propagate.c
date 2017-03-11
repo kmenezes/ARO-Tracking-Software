@@ -83,7 +83,7 @@ int range_topo2look_angles(double azimuth, double elevation, double azimuth_velo
 	int l=mycross(v, vxy, rxy);
 
 	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
-	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
+	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*cos(myangle(rxy, vxy))));
 
 
 	return 0;
@@ -227,6 +227,55 @@ int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, dou
 
 	return 0;
 
+}
+int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity, double theta_t, Vector *eci_position, Vector *eci_velocity){
+
+	double theta_dot = 7.2921158553*pow(10,-5);
+
+	Matrix T1, T2, v1, v2; //T1 and T2 are the two transformation matrices. v1 and v2 are the two terms of the velocity vector
+
+	zero(&T1, 3, 3);
+	zero(&T2, 3, 3);
+	zero(&v1, 3, 1); // a 3x1 matrix that makes up the first term in the ecf_velocity equation
+	zero(&v2, 3, 1); // a 3x1 matrix that makes up the second term in the ecf_velocity equation
+
+	T1.matrix[0][0] = cos(theta_t);
+	T1.matrix[0][1] = sin(theta_t);
+	T1.matrix[0][2] = 0;
+	T1.matrix[1][0] = -sin(theta_t);
+	T1.matrix[1][1] = cos(theta_t);
+	T1.matrix[1][2] = 0;
+	T1.matrix[2][0] = 0;
+	T1.matrix[2][1] = 0;
+	T1.matrix[2][2] = 1;
+
+	sat_ecf_position->x = T1.matrix[0][0]*eci_position->x + T1.matrix[0][1]*eci_position->y + T1.matrix[0][2]*eci_position->z;
+	sat_ecf_position->y = T1.matrix[1][0]*eci_position->x + T1.matrix[1][1]*eci_position->y + T1.matrix[1][2]*eci_position->z;
+	sat_ecf_position->z = T1.matrix[2][0]*eci_position->x + T1.matrix[2][1]*eci_position->y + T1.matrix[2][2]*eci_position->z;
+
+	T2.matrix[0][0] = -sin(theta_t);
+	T2.matrix[0][1] = cos(theta_t);
+	T2.matrix[0][2] = 0;
+	T2.matrix[1][0] = -cos(theta_t);
+	T2.matrix[1][1] = -sin(theta_t);
+	T2.matrix[1][2] = 0;
+	T2.matrix[2][0] = 0;
+	T2.matrix[2][1] = 0;
+	T2.matrix[2][2] = 0;
+
+	v1.matrix[0][0] = T1.matrix[0][0]*eci_velocity->x + T1.matrix[0][1]*eci_velocity->y + T1.matrix[0][2]*eci_velocity->z;
+	v1.matrix[1][0] = T1.matrix[1][0]*eci_velocity->x + T1.matrix[1][1]*eci_velocity->y + T1.matrix[1][2]*eci_velocity->z;
+	v1.matrix[2][0] = T1.matrix[2][0]*eci_velocity->x + T1.matrix[2][1]*eci_velocity->y + T1.matrix[2][2]*eci_velocity->z;
+
+	v2.matrix[0][0] = -theta_dot*(T2.matrix[0][0]*eci_position->x + T2.matrix[0][1]*eci_position->y + T2.matrix[0][2]*eci_position->z);
+	v2.matrix[1][0] = -theta_dot*(T2.matrix[1][0]*eci_position->x + T2.matrix[1][1]*eci_position->y + T2.matrix[1][2]*eci_position->z);
+	v2.matrix[2][0] = -theta_dot*(T2.matrix[2][0]*eci_position->x + T2.matrix[2][1]*eci_position->y + T2.matrix[2][2]*eci_position->z);
+
+	sat_ecf_velocity->x = v1.matrix[0][0] - v2.matrix[0][0];
+	sat_ecf_velocity->y = v1.matrix[1][0] - v2.matrix[1][0];
+	sat_ecf_velocity->z = v1.matrix[2][0] - v2.matrix[2][0];
+
+	return 0;
 }
 
 double KeplerEqn(double Mt_mean_anomaly,const double eccentricity){
