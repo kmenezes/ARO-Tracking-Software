@@ -198,12 +198,12 @@ int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, dou
 	// range distance
 	double r = (a*(1-pow(e,2)) / (1+e*cos(true)));
 	// First time derivative of the spacecraft range
-	double v = (a*e*(1-pow(e,2))*sin(true)*true) / (pow((1+e*cos(true)),2));
+	double v = (a*e*(1-pow(e,2))*sin(true)*true_dot) / (pow((1+e*cos(true)),2));
 	eci_position->x = r*(cos(capital_omegs)*cos(w+true)-sin(capital_omegs)*cos(i)*sin(w+true));
 	eci_position->y = r*(sin(capital_omegs)*cos(w+true)+cos(capital_omegs)*cos(i)*sin(w+true));
 	eci_position->z = r*(sin(i)*sin(w+true));
 	eci_velocity->x = v*(cos(capital_omegs)*cos(w+true)-sin(capital_omegs)*cos(i)*sin(w+true)) + r*true_dot*(-cos(capital_omegs)*sin(w+true)-sin(capital_omegs)*cos(i)*cos(w+true));
-	eci_velocity->y = v*(sin(capital_omegs)*cos(w+true)+cos(capital_omegs)*cos(i)*sin(w+true)) + r*true_dot*(-sin(capital_omegs)*sin(w+true)-cos(capital_omegs)*cos(i)*cos(w+true));
+	eci_velocity->y = v*(sin(capital_omegs)*cos(w+true)+cos(capital_omegs)*cos(i)*sin(w+true)) + r*true_dot*(-sin(capital_omegs)*sin(w+true)+cos(capital_omegs)*cos(i)*cos(w+true));
 	eci_velocity->z = v*(sin(i)*sin(w+true)) + r*true_dot*(sin(i)*cos(w+true));
 	return 0;
 }
