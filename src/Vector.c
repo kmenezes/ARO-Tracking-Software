@@ -48,7 +48,7 @@ int vecadd(Vector*v3, Vector*v1, Vector*v2){
 	return 0;
 }
 int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
-	double PI=3.1415926;
+	double PI=3.1415926535897932384626433832795028841971693993751058209749445923;
 	double X, Y, Z, n, a, e2, f;
 	f=1/298.257223563;
 	double lat_rad, long_rad;

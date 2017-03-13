@@ -31,6 +31,7 @@ int STKout(double *time, int size_time_array, char CoordinateSystem[], Vector *p
 	for(int i = 0 ; i < size_time_array ; i++){
 		fprintf(fp,"%f %f %f %f %f %f %f\n", time[i], position[i].x, position[i].y, position[i].z, velocity[i].x, velocity[i].y, velocity[i].z);
 	}
+	fprintf(fp, "\nEND Ephemeris\n");
 	fclose(fp);
 
 	return(0);

@@ -8,8 +8,15 @@
 #ifndef PROPAGATE_H_
 #define PROPAGATE_H_
 
+typedef struct LookAngles {
+	double azimuth_velocity;
+	double elevation_velocity;
+	double azimuth;
+	double elevation;
+} LookAngles;
+// Function to find the current satellite look-angles at the station position.
+void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity);
 double trueanom(double eccentricity, double E);
-
 
 /* For a full description of this function,  see KEPLER.HTM on the Guide
 Web site,  http://www.projectpluto.com.  There was a long thread about
@@ -20,10 +27,8 @@ go into excruciating detail as to how it's done below. */
 double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
 
 
-// Function to find the current satellite look-angles at the station position.
-int range_topo2look_angles(double azimuth, double elevation,
-double azimuth_velocity, double elevation_velocity,
-Vector *range_topo_position, Vector *range_topo_velocity);
+
+
 
 /*
  * Function to find the current satellite position and velocity in the topocentric system
@@ -45,7 +50,7 @@ double omega_longitude_ascending_node, double omega_argument_periapsis,
 double inclination, double nt_mean_motion);
 
 // Function to calculate current mean anomaly and mean motion of the satellite
-int mean_anomaly_motion (double Mt_mean_anomaly, double nt_mean_motion,
+int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion,
 double time, double ts_sat_epoch,
 double M0_mean_anomaly,
 double n_mean_motion,
