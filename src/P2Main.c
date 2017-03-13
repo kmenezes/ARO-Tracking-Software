@@ -31,7 +31,7 @@ int main(){
 
 	//tests for keplers
 	printf("\n------------------------------------------\n");
-	printf("\nTesting Keplers Equation \n");
+	printf("\nTesting Keplers Equation for the various types of orbits \n");
 	printf("------------------------------------------\n");
 	double ecc,ecc2,ecc3,ecc4;
 	printf("\nTesting Keplers Eqn for Circular Orbit for Mean anom = 3.6029 and Ecc = 0.0\n");
@@ -81,7 +81,6 @@ int main(){
 	s->x=0;
 	s->y=0;
 	s->z=0;
-
 	station_ECF(s, 45, 45, 45);
 	printf("\n Station_ECF with inputs of station_ECF(s, 45, 45, 45) returns:  X=%f  Y=%f  Z=%f \n", s->x, s->y, s->z);
 	printf("\n The result should be ECEF from Latitude,Longitude, Height (ellipsoidal) X : 3194.442   km, Y : 3194.442   km, Z : 4487.38   km\n");
@@ -152,17 +151,54 @@ int main(){
 	printf("w = 93.0850;i = 51.5649; nt = 0.000023213 in rev/sec\n");
 	printf("Note that angles were converted to radians\n");
 	sat_ECI(&Pos, &Vel, e, ecc_anomaly*PI/180, semi, RAAN*PI/180, w*PI/180, i*PI/180, nt);
-	printf("the Px is: %f\n", Pos.x);
-	printf("the Py is: %f\n", Pos.y);
-	printf("the Pz is: %f\n", Pos.z);
-	printf("the Vx is: %f\n", Vel.x);
-	printf("the Vy is: %f\n", Vel.y);
-	printf("the Vz is: %f\n", Vel.z);
-	printf("\n--------------------------------------------------------------------------------------------------\n");
+	printf("The current position and velocity in ECI is: \n");
+	printf("Px is: %f\n", Pos.x);
+	printf("Py is: %f\n", Pos.y);
+	printf("Pz is: %f\n", Pos.z);
+	printf("The predicted STK values for position are -7896.982740km, -24633.763428km, 5353.505305km \n");
+	printf("Vx is: %f\n", Vel.x);
+	printf("Vy is: %f\n", Vel.y);
+	printf("Vz is: %f\n", Vel.z);
+	printf("The predicted STK values for velocity are 2.145720km/s, -1.392020km/s, -2.937639km/s \n");
+
+	printf("\n-------------------------------------------------------------------------------------------------\n");
 
 	printf("\n-----------------------------Testing sat_ECF-----------------------------------------------------\n");
+	struct Vector PosECI, VelECI, POSECF, VELECF;
+	//initializing new pos/vel ECF vectors
+	POSECF.x = 0;POSECF.y = 0;POSECF.z = 0;POSECF.mag = magntd(POSECF);
+	VELECF.x = 0;VELECF.y = 0;VELECF.z = 0;VELECF.mag = magntd(VELECF);
 
-	printf("\n----------------------------------------------------------------------------------\n");
+	// Setting the expected values for ECI velocity and positions i.e. what we should've got before
+	printf("This function uses the STK calculated values from the above test sat_ECI\n");
+	PosECI.x = -7896.982740;PosECI.y = -24633.763428;PosECI.z = 5353.505305;PosECI.mag = magntd(PosECI);
+	VelECI.x = 2.145720;VelECI.y = -1.392020;VelECI.z = -2.937639;VelECI.mag = magntd(VelECI);
+
+	double frac, day, epoch, Du, Tu, GMST00, theta_mid, r, theta_t;
+
+	// Calculating the Difference in JD between the start and J2000
+	frac = frcofd(24, 0, 0);day = doy(2017, 3, 11);epoch = 17000+day+frac;Du = jdatep(epoch) - jdatep(00001.5);	Tu = Du/36525;
+	GMST00 = 24110.54841 + 8640184.812866*Tu + 0.093104*pow(Tu,2) - 6.2*pow(10,-6)*pow(Tu,3);
+	GMST00 = fmod(GMST00, 86400);theta_mid = 2*3.14159*GMST00/86400;
+	r = 1.002737909350795+5.9006*pow(10,-11)*Tu - 5.9*pow(10, -15)*pow(Tu,2);
+	theta_t = theta_mid + 2*3.14159*r*(16*3600);
+
+	sat_ECF(&POSECF, &VELECF, theta_t, &PosECI, &VelECI);
+	printf("The position in ECF is: \n");
+	printf("Px is: %f\n", POSECF.x);
+	printf("Py is: %f\n", POSECF.y);
+	printf("Pz is: %f\n", POSECF.z);
+	printf("The predicted STK values for position are -23997.9889km, -9664.9km, 5341.405075km \n");
+
+	printf("The velocity in ECF is: \n");
+	printf("Vx is: %f\n", VELECF.x);
+	printf("Vy is: %f\n", VELECF.y);
+	printf("Vz is: %f\n", VELECF.z);
+	printf("The predicted STK values for velocity are -0.4km/s, -0.793789km/s, -2.934026km/s \n");
+
+	printf("theta_t is %f\n", theta_t);
+
+	printf("\n-------------------------------------------------------------------------------------------------\n");
 
 	//STK out tester
 	printf("---------------Testing STKout------------------\n");
@@ -194,19 +230,3 @@ int main(){
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

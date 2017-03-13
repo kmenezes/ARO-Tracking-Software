@@ -76,7 +76,7 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 	range_topo_position->mag=magntd(*range_topo_position);
 	Vector *v;
 	v = (Vector*)malloc(sizeof(Vector));
-	int l=mycross(v, vxy, rxy);
+	mycross(v, vxy, rxy);
 	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
 	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
 	LA->azimuth = azimuth;
@@ -165,28 +165,21 @@ double near_parabolic( const double ecc_anom, const double e)
 int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position,
 		Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
 	int m, n;m=3;n=3;
-	Matrix T;
+	Matrix Trans;
 	// Initialize matrix of 3x3
-	zero(&T, m, n);
-
-	T.matrix[0][0] = -sin(station_longitude);
-	T.matrix[0][1] = cos(station_longitude);
-	T.matrix[0][2] = 0;
-	T.matrix[1][0] = -cos(station_longitude)*sin(station_latitude);
-	T.matrix[1][1] = -sin(station_longitude)*sin(station_latitude);
-	T.matrix[1][2] = cos(station_latitude);
-	T.matrix[2][0] = cos(station_longitude)*cos(station_latitude);
-	T.matrix[2][1] = sin(station_longitude)*cos(station_latitude);
-	T.matrix[2][2] = sin(station_latitude);
-
-	range_topo_position->x = T.matrix[0][0]*sat_ecf_position->x + T.matrix[0][1]*sat_ecf_position->y + T.matrix[0][2]*sat_ecf_position->z;
-	range_topo_position->y = T.matrix[1][0]*sat_ecf_position->x + T.matrix[1][1]*sat_ecf_position->y + T.matrix[1][2]*sat_ecf_position->z;
-	range_topo_position->z = T.matrix[2][0]*sat_ecf_position->x + T.matrix[2][1]*sat_ecf_position->y + T.matrix[2][2]*sat_ecf_position->z;
-
-	range_topo_velocity->x = T.matrix[0][0]*sat_ecf_velocity->x + T.matrix[0][1]*sat_ecf_velocity->y + T.matrix[0][2]*sat_ecf_velocity->z;
-	range_topo_velocity->y = T.matrix[1][0]*sat_ecf_velocity->x + T.matrix[1][1]*sat_ecf_velocity->y + T.matrix[1][2]*sat_ecf_velocity->z;
-	range_topo_velocity->z = T.matrix[2][0]*sat_ecf_velocity->x + T.matrix[2][1]*sat_ecf_velocity->y + T.matrix[2][2]*sat_ecf_velocity->z;
-
+	zero(&Trans, m, n);
+	// in matrix form it looks like
+	Trans.matrix[0][0] = -sin(station_longitude);	Trans.matrix[0][1] = cos(station_longitude);Trans.matrix[0][2] = 0;
+	Trans.matrix[1][0] = -cos(station_longitude)*sin(station_latitude);Trans.matrix[1][1] = -sin(station_longitude)*sin(station_latitude);Trans.matrix[1][2] = cos(station_latitude);
+	Trans.matrix[2][0] = cos(station_longitude)*cos(station_latitude);Trans.matrix[2][1] = sin(station_longitude)*cos(station_latitude);Trans.matrix[2][2] = sin(station_latitude);
+	// perform position calculations
+	range_topo_position->x = Trans.matrix[0][0]*sat_ecf_position->x + Trans.matrix[0][1]*sat_ecf_position->y + Trans.matrix[0][2]*sat_ecf_position->z;
+	range_topo_position->y = Trans.matrix[1][0]*sat_ecf_position->x + Trans.matrix[1][1]*sat_ecf_position->y + Trans.matrix[1][2]*sat_ecf_position->z;
+	range_topo_position->z = Trans.matrix[2][0]*sat_ecf_position->x + Trans.matrix[2][1]*sat_ecf_position->y + Trans.matrix[2][2]*sat_ecf_position->z;
+	// perform velocity calculations
+	range_topo_velocity->x = Trans.matrix[0][0]*sat_ecf_velocity->x + Trans.matrix[0][1]*sat_ecf_velocity->y + Trans.matrix[0][2]*sat_ecf_velocity->z;
+	range_topo_velocity->y = Trans.matrix[1][0]*sat_ecf_velocity->x + Trans.matrix[1][1]*sat_ecf_velocity->y + Trans.matrix[1][2]*sat_ecf_velocity->z;
+	range_topo_velocity->z = Trans.matrix[2][0]*sat_ecf_velocity->x + Trans.matrix[2][1]*sat_ecf_velocity->y + Trans.matrix[2][2]*sat_ecf_velocity->z;
 	return 0;
 }
 int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, double ecc_anomaly, double a_semi_major_axis, double omega_longitude_ascending_node, double omega_argument_periapsis, double inclination, double nt_mean_motion){
