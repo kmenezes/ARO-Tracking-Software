@@ -1,9 +1,12 @@
 /*
  * FileIO.h
+
  *
  *  Created on: Mar 2, 2017
  *      Author: james
  */
+#include <stdio.h>
+#include <stdlib.h>
 typedef struct Station {
 	char *name;
 	double stnlat;
@@ -20,7 +23,7 @@ typedef struct Station {
 	double st_el_speed_max;
 } Station;
 typedef struct Satellite {
-	char *name;
+	char name[128];
 	double refepoch;
 	double incl;
 	double raan;
@@ -36,5 +39,6 @@ typedef struct Satellite {
 void Banner();
 void ERRMSG(char* STRING);
 int ReadStationFile(Station *Stn, char STNFIL);
-int ReadNoradTLE(Satellite *sat, char line0, char line1, char line2);
+int ReadNoradTLE(Satellite sats[], char *file);
+int ReadSingleNoradTLE(Satellite *sat, FILE *fp);
 void anykey();

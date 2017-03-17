@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-int STKout(double *time, int size_time_array, char CoordinateSystem[], Vector *position, Vector *velocity){
+int STKout(double *time, int size_time_array, char *filename, char CoordinateSystem[], Vector *position, Vector *velocity){
 
 	FILE * fp;
-	fp = fopen ("STKout.e", "w+");
+	fp = fopen (filename, "w+");
 	fprintf(fp, "%s", "stk.v.11\n");
 	fprintf(fp, "\nBEGIN Ephemeris\n");
 	fprintf(fp,"\nNumberOfEphemerisPoints	%d\n", size_time_array);
@@ -27,13 +27,13 @@ int STKout(double *time, int size_time_array, char CoordinateSystem[], Vector *p
 	}
 	fprintf(fp, "\n");fprintf(fp, "\n");fprintf(fp, "\n");
 	fprintf(fp,"%s", "EphemerisTimePosVel\n\n");
-	//time array | px | py |pz | vx | vy |vz
+	//time array | px | py |pz | vx | vy | vz
 	for(int i = 0 ; i < size_time_array ; i++){
 		fprintf(fp,"%f %f %f %f %f %f %f\n", time[i], position[i].x, position[i].y, position[i].z, velocity[i].x, velocity[i].y, velocity[i].z);
 	}
 	fprintf(fp, "\nEND Ephemeris\n");
 	fclose(fp);
 
-	return(0);
+	return 0;
 }
 

@@ -6,6 +6,7 @@
  */
 
 #include "Matrix.h"
+#include "Vector.h"
 #include <Math.h>
 #include <stdlib.h>
 #include <stdio.h>

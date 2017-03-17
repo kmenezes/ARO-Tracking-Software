@@ -46,8 +46,8 @@ double THETAJ (double JulianDate){
 	double Tu = Du / 36525.0;
 	double GMST = 24110.54841 + 8640184.812866*Tu + 0.093104*Tu*Tu - 0.0000062*Tu*Tu*Tu;
 	for (;GMST > 86400;){
-			GMST = GMST - 86400;
-		}
+		GMST = GMST - 86400;
+	}
 	double ThetaMid = 2*PI*GMST/86400;
 	double r = 1.002737909350795+(5.9006/100000000000)*Tu-(5.9/1000000000000000)*Tu*Tu;
 	double t = JulianDate - JDm;
@@ -57,33 +57,6 @@ double THETAJ (double JulianDate){
 	return final;
 }
 
-void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity){
-	azimuth=atan(range_topo_position->x/range_topo_position->y);
-	elevation=atan(range_topo_position->z/(sqrt(pow(range_topo_position->x, 2)+pow(range_topo_position->y, 2))));
-	azimuth=(azimuth*180)/3.14;
-	elevation=(elevation*180)/3.14;
-	Vector *rxy, *vxy;
-	rxy = (Vector*)malloc(sizeof(Vector));
-	vxy = (Vector*)malloc(sizeof(Vector));
-	rxy->x=range_topo_position->x;
-	rxy->y=range_topo_position->y;
-	rxy->z=0;
-	rxy->mag=magntd(*rxy);
-	vxy->x=range_topo_velocity->x;
-	vxy->y=range_topo_velocity->y;
-	vxy->z=0;
-	vxy->mag=magntd(*vxy);
-	range_topo_position->mag=magntd(*range_topo_position);
-	Vector *v;
-	v = (Vector*)malloc(sizeof(Vector));
-	mycross(v, vxy, rxy);
-	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
-	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
-	LA->azimuth = azimuth;
-	LA->azimuth_velocity = azimuth_velocity;
-	LA->elevation = elevation;
-	LA->elevation_velocity = elevation_velocity;
-}
 
 // a just incase helper method
 double trueanom(double eccentricity, double E){
@@ -160,6 +133,33 @@ double near_parabolic( const double ecc_anom, const double e)
 		n += 2;
 	}
 	return( rval);
+}
+void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity){
+	azimuth=atan(range_topo_position->x/range_topo_position->y);
+	elevation=atan(range_topo_position->z/(sqrt(pow(range_topo_position->x, 2)+pow(range_topo_position->y, 2))));
+	azimuth=(azimuth*180)/3.14;
+	elevation=(elevation*180)/3.14;
+	Vector *rxy, *vxy;
+	rxy = (Vector*)malloc(sizeof(Vector));
+	vxy = (Vector*)malloc(sizeof(Vector));
+	rxy->x=range_topo_position->x;
+	rxy->y=range_topo_position->y;
+	rxy->z=0;
+	rxy->mag=magntd(*rxy);
+	vxy->x=range_topo_velocity->x;
+	vxy->y=range_topo_velocity->y;
+	vxy->z=0;
+	vxy->mag=magntd(*vxy);
+	range_topo_position->mag=magntd(*range_topo_position);
+	Vector *v;
+	v = (Vector*)malloc(sizeof(Vector));
+	mycross(v, vxy, rxy);
+	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
+	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
+	LA->azimuth = azimuth;
+	LA->azimuth_velocity = azimuth_velocity;
+	LA->elevation = elevation;
+	LA->elevation_velocity = elevation_velocity;
 }
 
 int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position,

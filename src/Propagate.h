@@ -26,10 +26,6 @@ go into excruciating detail as to how it's done below. */
 
 double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
 
-
-
-
-
 /*
  * Function to find the current satellite position and velocity in the topocentric system
 coordinates.*/
