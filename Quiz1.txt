@@ -1,0 +1,72 @@
+/*
+ * Quiz1.c
+ *
+ *  Created on: Mar 17, 2017
+ *      Author: A. Innanen
+ */
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+#include "Basic.h"
+#include "Vector.h"
+#include "Matrix.h"
+#include "Datefun.h"
+#include "Fileio.h"
+#include "Propagate.h"
+#include "Check.c"
+
+int main(){
+	//question 1
+	char *file = "Quiz1.txt";
+	Satellite sat1[3];
+	ReadNoradTLE(sat1, file);
+
+
+	//1a
+	char *gd=jd2dat(jdatep(sat1[1].refepoch));
+
+	printf("\nThe Gregorian Date of the Epoch is: %s\n", gd);
+
+	//1b
+	double ma,mm, sma;
+
+	ma=sat1[1].meanan;
+	mm=sat1[1].meanmo;
+	sma=pow(ma/pow(mm, 2), 1/3);
+
+	printf("\nThe Mean Anomaly is: %f.\nThe Mean Motion is: %f.\nThe Semi-major Axis is: %f.\n", ma, mm, sma);
+
+	//1c + 2b
+
+	double mt, nt;
+	char *date = "1995-10-16 06:23:23";
+	double epoch=dat2jd(date);
+	double ndot = sat1[1].ndot;
+	double n2dot=sat1[1].nddot6;
+
+	for(int j=0; j<31; j++){
+		double time=j*60;
+
+		mean_anomaly_motion(&mt, &nt, time, epoch, ma, mm, ndot, n2dot);
+		double EA=KeplerEqn(mt, sat1[1].eccn);
+
+		printf("\nTime(s):\tN(rev/day):\tM(degrees):\tEccentric Anomaly (degrees):\n");
+		printf("%f\t%f\t%f\t%f\n", time, mt, nt, EA);
+	}
+
+
+
+	//question 2
+	//2a
+
+	printf("\nThe Eccentricity of the orbit is: %f.\n", sat1[1].eccn);
+
+
+
+
+	return 0;
+}
