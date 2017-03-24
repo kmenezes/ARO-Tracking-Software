@@ -63,9 +63,7 @@ int ReadStationFile(Station *Stn, char STNFIL) {
 			switch (switch_param) {
 			case 0:
 				fgets(name, sizeof(name), fp);
-				memset(name_ptr, '\0', sizeof(char) ); //eee
-				strncpy(name_ptr, &name, sizeof(char));//eee
-			//	name_ptr = &name;
+				name_ptr = &name;
 				switch_param++;
 				break;
 			case 1:

@@ -4,7 +4,6 @@
  *  Created on: Mar 4, 2017
  *      Author: james/keith
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -139,60 +138,70 @@ double dat2jd (char *DateString){
 	return JD;
 }
 
-char* jd2dat(double JulianDate){
-	double JD = 2450006.18291;
+char* jd2dat(double JulianDate) {
+
+	double JD = JulianDate;
 	double Z, F, A, alpha, B, C, D, E, dd, mm, yyyy, hr, min, sec;
-	Z = floor(JD+0.5);
-	F = (JD+0.5)-Z;
-	if(Z < 2299161){
+
+	Z = floor(JD + 0.5);
+	F = (JD + 0.5) - Z;
+
+	if (Z < 2299161) {
 		A = Z;
+	} else {
+		alpha = floor((Z - 1867216.25) / 36524.25);
+		A = Z + 1 + alpha - floor(alpha / 4);
 	}
-	else{
-		alpha = floor((Z-1867216.25)/36524.25);
-		A = Z + 1 + alpha - floor(alpha/4);
-	}
+
 	B = A + 1524;
-	C = floor((B-122.1)/365.25);
-	D = floor(365.25*C);
-	E = floor((B-D)/30.6001);
-	dd = B - D - floor(30.6001*E) + F;
-	hr = (dd - floor(dd))*24;
-	min = (hr - floor(hr))*60;
-	sec = (min-floor(min))*60;
+	C = floor((B - 122.1) / 365.25);
+	D = floor(365.25 * C);
+	E = floor((B - D) / 30.6001);
+
+	dd = B - D - floor(30.6001 * E) + F;
+
+	hr = (dd - floor(dd)) * 24;
+	min = (hr - floor(hr)) * 60;
+	sec = (min - floor(min)) * 60;
+
 	dd = floor(dd);
 	hr = floor(hr);
 	min = floor(min);
 	sec = floor(sec);
-	if(E < 13.5){
-		mm = E-1;
+
+	if (E < 13.5) {
+		mm = E - 1;
+	} else {
+		mm = E - 13;
 	}
-	else{
-		mm = E-13;
-	}
-	if(mm > 2.5){
-		yyyy = C-4716;
-	}
-	else{
+
+	if (mm > 2.5) {
+		yyyy = C - 4716;
+	} else {
 		yyyy = C - 4715;
 	}
-	static char Cal[20], M[3], Day[3], H[3], Min[3], S[3];
-	snprintf(Cal, 5, "%5f", yyyy);
-	snprintf(M, 3, "%2f", mm);
-	snprintf(Day, 3, "%2f", dd);
-	snprintf(H, 3, "%2f", hr);
-	snprintf(Min, 3, "%2f", min);
-	snprintf(S, 3, "%2f", sec);
-	strcat(Cal, "-");
-	strcat(Cal, M);
-	strcat(Cal, "-");
-	strcat(Cal, Day);
-	strcat(Cal, " ");
-	strcat(Cal, H);
-	strcat(Cal, ":");
-	strcat(Cal, Min);
-	strcat(Cal, ":");
-	strcat(Cal, S);
-	return Cal;
+
+	static char Calendar[20], M[3], Day[3], H[3], Min[3], S[3];
+	snprintf(Calendar, 5, "%5f", yyyy);
+	snprintf(M, 3, "%02.0f", mm);
+	snprintf(Day, 3, "%02.0f", dd);
+	snprintf(H, 3, "%02.0f", hr);
+	snprintf(Min, 3, "%02.0f", min);
+	snprintf(S, 3, "%02.0f", sec);
+
+	strcat(Calendar, "-");
+	strcat(Calendar, M);
+	strcat(Calendar, "-");
+	strcat(Calendar, Day);
+	strcat(Calendar, " ");
+	strcat(Calendar, H);
+	strcat(Calendar, ":");
+	strcat(Calendar, Min);
+	strcat(Calendar, ":");
+	strcat(Calendar, S);
+
+	return Calendar;
+
 }
 
 char* curday(){

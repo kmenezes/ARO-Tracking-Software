@@ -70,28 +70,20 @@ double trueanom(double eccentricity, double E){
 //nt_mean_motion at time t
 //ts = start time from TLE
 // Function to calculate current mean anomaly and mean motion of the satellite
-int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion,
-		double time, double ts_sat_epoch,
-		double M0_mean_anomaly, //ts epoch mean anom
-		double n_mean_motion,
-		double n_dot_mean_motion,
-		double n_2dots_mean_motion){
+int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion, double time, double ts_sat_epoch,	double M0_mean_anomaly, double n_mean_motion, double n_dot_mean_motion,	double n_2dots_mean_motion){
 
-	// assumes it inputs julian dates// needs to be julian
-	double timeinterval = time - ts_sat_epoch;
+	double timeinterval = (time - ts_sat_epoch)*86400.0;
 	double M0_mean_anomaly_rad = M0_mean_anomaly * (PI/180);
-	// Convert all from rev/day -> rad/sec
 	double n_mean_motion_rad_p_s = n_mean_motion * (2*PI/86400);
-	double n_dot_mean_motion_rad_p_s = n_dot_mean_motion *(2*PI/86400);
-	double n_2dots_mean_motion_rad_p_s = n_2dots_mean_motion * (2*PI/86400);
-	// Calculate M_at_t
-	double M_at_t = M0_mean_anomaly_rad + n_mean_motion_rad_p_s*timeinterval + (n_dot_mean_motion_rad_p_s/2)*(timeinterval)*(timeinterval) + (n_2dots_mean_motion_rad_p_s/6)*(timeinterval)*(timeinterval)*(timeinterval);
-	// Same code as in Fixang, but due to passing by value must be re-done inside this function
+	double n_dot_mean_motion_rad_p_s = n_dot_mean_motion *(2*PI/pow(86400, 2));
+	double n_2dots_mean_motion_rad_p_s = n_2dots_mean_motion * (2*PI/pow(86400, 3));
+	double nt=n_mean_motion_rad_p_s + 2*(n_dot_mean_motion_rad_p_s/2)*timeinterval + 3*(n_2dots_mean_motion_rad_p_s/6)*timeinterval*timeinterval;
+	double M_at_t = M0_mean_anomaly_rad + nt*timeinterval + (n_dot_mean_motion_rad_p_s/2)*(timeinterval)*(timeinterval) + (n_2dots_mean_motion_rad_p_s/6)*(timeinterval)*(timeinterval)*(timeinterval);
 	for (;M_at_t > PI *2;){
-		M_at_t = M_at_t - PI *2;}
-	// Change References to Mt_mean_anomaly and nt_mean_motion
+		M_at_t = M_at_t - PI *2;
+	}
 	*Mt_mean_anomaly = M_at_t;
-	*nt_mean_motion = n_mean_motion_rad_p_s + 2*(n_dot_mean_motion_rad_p_s/2)*timeinterval + 3*(n_2dots_mean_motion_rad_p_s/6)*timeinterval*timeinterval;
+	*nt_mean_motion = nt;
 	return 0;
 }
 
@@ -183,27 +175,35 @@ int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vec
 	return 0;
 }
 int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, double ecc_anomaly, double a_semi_major_axis, double omega_longitude_ascending_node, double omega_argument_periapsis, double inclination, double nt_mean_motion){
-	double e, E, a, capital_omegs, w, i, n;
+	double e, E, a, capital_omega, w, i, n;
 	e = eccentricity;
 	E = ecc_anomaly;
 	a = a_semi_major_axis;
-	capital_omegs = omega_longitude_ascending_node;
+	capital_omega = omega_longitude_ascending_node;
 	w = omega_argument_periapsis;
 	i = inclination;
 	n = nt_mean_motion;
 	// Calculating True anom. concerns with using our helper function
 	double true = 2*atan(sqrt((1+e)/(1-e))*tan(E/2));
+	if(true<0){
+		true=true+2*PI;
+	}
+	//printf("True Anom: %f\n", true);
 	//First time derivative of True Anomaly
 	double true_dot = n*sqrt((1-pow(e,2)) / pow((1-e*cos(E)),2));
+	//printf("True Anom Derivative: %f\n", true_dot);
 	// range distance
 	double r = (a*(1-pow(e,2)) / (1+e*cos(true)));
+	//printf("Range: %f\n",r);
 	// First time derivative of the spacecraft range
 	double v = (a*e*(1-pow(e,2))*sin(true)*true_dot) / (pow((1+e*cos(true)),2));
-	eci_position->x = r*(cos(capital_omegs)*cos(w+true)-sin(capital_omegs)*cos(i)*sin(w+true));
-	eci_position->y = r*(sin(capital_omegs)*cos(w+true)+cos(capital_omegs)*cos(i)*sin(w+true));
+	//printf("Velocity: %f\n", v);
+
+	eci_position->x = r*(cos(capital_omega)*cos(w+true)-sin(capital_omega)*cos(i)*sin(w+true));
+	eci_position->y = r*(sin(capital_omega)*cos(w+true)+cos(capital_omega)*cos(i)*sin(w+true));
 	eci_position->z = r*(sin(i)*sin(w+true));
-	eci_velocity->x = v*(cos(capital_omegs)*cos(w+true)-sin(capital_omegs)*cos(i)*sin(w+true)) + r*true_dot*(-cos(capital_omegs)*sin(w+true)-sin(capital_omegs)*cos(i)*cos(w+true));
-	eci_velocity->y = v*(sin(capital_omegs)*cos(w+true)+cos(capital_omegs)*cos(i)*sin(w+true)) + r*true_dot*(-sin(capital_omegs)*sin(w+true)+cos(capital_omegs)*cos(i)*cos(w+true));
+	eci_velocity->x = v*(cos(capital_omega)*cos(w+true)-sin(capital_omega)*cos(i)*sin(w+true)) + r*true_dot*(-cos(capital_omega)*sin(w+true)-sin(capital_omega)*cos(i)*cos(w+true));
+	eci_velocity->y = v*(sin(capital_omega)*cos(w+true)+cos(capital_omega)*cos(i)*sin(w+true)) + r*true_dot*(-sin(capital_omega)*sin(w+true)+cos(capital_omega)*cos(i)*cos(w+true));
 	eci_velocity->z = v*(sin(i)*sin(w+true)) + r*true_dot*(sin(i)*cos(w+true));
 	return 0;
 }

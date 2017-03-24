@@ -10,7 +10,6 @@
 #include <math.h>
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
-
 /*
  * Function to print the AOS/LOS link strength
  *Frequency band = 1227
@@ -21,7 +20,7 @@
  *Frequency RCV noise temp = 200
  *
  * */
-/*double linkstrength(double range_z){
+double linkstrength(double range){
 	double fre = 1227.0;
 	double eff = 0.7;
 	double diam = 46;//m
@@ -32,15 +31,15 @@
 
 	double EIRP = 8.3988; //3dBW
 	double La = 0.1; //dBW
-	double Ls = 10*log((light/(4*PI*fre*range_z*1000))^2);// dB
+	double Ls = 10*log((light/(4*PI*fre*range*1000))^2);// dB
 	double Gr = 10*log((((PI*PI) * (fre*fre) * (diam*diam) *eff)/light*light));// dB
 	double linksstren = EIRP - La + Gr + Ls +30;
 
 	return linksstren;
-}*/
+}
 
 
-double a = log(10);
+//double a = log(10);
 
 
 
