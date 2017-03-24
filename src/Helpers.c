@@ -20,6 +20,7 @@
  *Frequency RCV noise temp = 200
  *
  * */
+/*
 double linkstrength(double range){
 	double fre = 1227.0;
 	double eff = 0.7;
@@ -37,6 +38,7 @@ double linkstrength(double range){
 
 	return linksstren;
 }
+*/
 
 
 //double a = log(10);

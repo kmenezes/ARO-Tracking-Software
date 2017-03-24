@@ -1,232 +1,442 @@
+#include <stdio.h>
+#include <math.h>
 #include "Propagate.h"
 #include "Basic.h"
-#include "Fileio.h"
+#include "FileIO.h"
 #include "Vector.h"
 #include "STKout.h"
 #include "DateAndTimeCalculations.h"
 #include "Matrix.h"
 #include "Vector.h"
 #include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#define PI 3.1415926535897932384626433832795028841971693993751058209749445923
+#include <stdlib.h>#include <string.h>
+#define CUBE_ROOT(X) (exp(log(X)/ 3.))
+#define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 int main(void){
-	printf("------------------------------------------\n");
-	printf("\nWelcome to P2 by James and Keith\n\n");
-	printf("------------------------------------------\n");
+
+	Banner();
+	printf("\nImporting station data...\n\n");
+	Station *stn = (Station*) malloc(sizeof(Station));
+	ReadStationFile(stn, '0');
+	printf("Complete\n\n");
+	int sf;
+	for (sf = 0; sf < 1;){
+		printf("\nEnter the number next to the corresponding option:\n");
+		printf("1   view station file data\n");
+		printf("2   edit station file data\n");
+		printf("3   continue\n\n");
+		int input1;
+		printf("Entry: ");
+		fflush(stdout);
+		scanf("%d", &input1);
+		if (input1 == 1){
+			printf("\nStation File Contents:\n");
+			printf("1  Name: %s\n", stn->name);
+			printf("2  Station Latitude: %f\n", stn->stnlat);
+			printf("3  Station Longitude: %f\n", stn->stnlong);
+			printf("4  Station Altitude: %f\n", stn->stnalt);
+			printf("5  UTC Offset: %f\n", stn->utc_offset);
+			printf("6  Azimuth Elevation nlim: %d\n", stn->az_el_nlim);
+			printf("7  Azimuth Elevation Limit Azimuth: %f\n", stn->az_el_lim.az);
+			printf("8  Azimuth Elevation Limit Elevation Min: %f\n", stn->az_el_lim.elmin);
+			printf("9  Azimuth Elevation Limit Elevation Max: %f\n", stn->az_el_lim.elmax);
+			printf("10 Station Azimuth Speed Max: %f\n", stn->st_az_speed_max);
+			printf("11 Station Elevation Speed Max: %f\n", stn->st_el_speed_max);
+		}
+		if(input1 == 2){
+
+			printf("\n1    name\n");
+			printf("2    stnlat\n");
+			printf("3    stnlong\n");
+			printf("4    stnalt\n");
+			printf("5    utc_offset\n");
+			printf("6    az_el_nlim\n");
+			printf("7    az_el_nlim.az\n");
+			printf("8    az_el_nlim.elmin\n");
+			printf("9    az_el_nlim.elmax\n");
+			printf("10   st_az_speed_max\n");
+			printf("11   st_el_speed_max\n");
+
+			printf("\nWhat parameter would you like to edit: ");
+			int num2;
+			fflush(stdout);
+			scanf("%d", &num2);
+			printf("\n");
+			if(num2 == 1){
+				printf("name entry: ");
+				char *n;
+				fflush(stdout);
+				scanf("%c", n);
+				//stn->name = n;
+			}
+			if(num2 == 2){
+				printf("stnlat entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->stnlat = n;
+			}
+			if(num2 == 3){
+				printf("stnlon entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->stnlong = n;
+			}
+			if(num2 == 4){
+				printf("stnalt: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->stnalt = n;
+			}
+			if(num2 == 5){
+				printf("utc_offset entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->utc_offset = n;
+			}
+			if(num2 == 6){
+				printf("az_el_nlim entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->az_el_nlim = n;
+			}
+
+			if(num2 == 7){
+				printf("az_el_lim.az entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->az_el_lim.az = n;
+			}
+			if(num2 == 8){
+				printf("az_el_lim.elmin entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->az_el_lim.elmin = n;
+			}
+
+			if(num2 == 9){
+				printf("az_el_lim.elmax entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->az_el_lim.elmax= n;
+			}
+
+			if(num2 == 10){
+				printf("st_az_speed_max entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->st_az_speed_max = n;
+			}
+
+			if(num2 == 11){
+				printf("st_el_speed_max entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				stn->st_el_speed_max = n;
+			}
 
 
-	printf("\nTesting Theta - J and N \n");
-	printf("------------------------------------------\n");
+		}
+		if (input1 == 3){sf++;}
 
-	printf("\nUsing the test value from the TLE Epoch: %f\n",05054.71335794);
-	// 05054.71335794
-	double value = 05054.71335794;
-	double THET = THETAN(value);
-	printf("\nThe result of  %f\n", THET);
-	printf("\nThe result should print 0.893608 \n ");
-
-	//tests for keplers
-	printf("\n------------------------------------------\n");
-	printf("\nTesting Keplers Equation for the various types of orbits \n");
-	printf("------------------------------------------\n");
-	double ecc,ecc2,ecc3,ecc4;
-	printf("\nTesting Keplers Eqn for Circular Orbit for Mean anom = 3.6029 and Ecc = 0.0\n");
-	printf("------------------------------------------\n");
-	ecc = KeplerEqn(3.6029,0.0);
-	printf("\n The result is: %f\n" ,ecc);
-	printf("\nFor circular it should result in the mean anom 3.6029 \n");
-	printf("\n------------------------------------------\n");
-	printf("\nTesting Kepler for eccentric Mean anom = 3.6029 = 206.430964 degrees and Ecc = 0.37255 \n");
-	ecc2 = KeplerEqn(3.6029,0.37255);
-	printf("\nKeplerEqn(3.6029,0.37255) returned: %f\n" ,ecc2);
-	printf("\nThe result should be in 199.35619827991917 degrees or 3.4794220442346146527 rads\n");
-	printf("\n------------------------------------------\n");
-	printf("\nTesting Kepler Elliptic orbit for Mean anom =1.5 and Ecc = 0.8\n");
-	printf("------------------------------------------\n");
-	ecc3 = KeplerEqn(1.5,0.8);
-	printf("\nKeplerEqn(1.5,0.8) returned: %f\n" ,ecc3);
-	printf("\nShould result in 2.1635326743829743634 or 123.96129108110373807 degrees \n");
-	printf("\n------------------------------------------\n");
-	printf("\nTesting Parabolic orbit Mean anom = 1.5 and Ecc = 1.0\n");
-	printf("------------------------------------------\n");
-	ecc4 = KeplerEqn(1.5,1.0);
-	printf("\nKeplerEqn(1.5,1.0) returns:  %f\n" ,ecc4);
-	printf("Result should be 1.952623\n");
-	printf("\n------------------------------------------\n");
-	printf("\nTesting Hyperbolic Mean anom = 40.69 and Ecc =  2.7696 \n");
-	printf("------------------------------------------\n");
-	ecc = KeplerEqn(40.69, 2.7696);
-	printf("\nKeplerEqn(40.69, 2.7696) returned: %f\n" ,ecc);
-	printf("\nshould return Hyperbolic eccentric anomaly = 3.46309\n");
-	printf("------------------------------------------\n");
-
-	// testing mean anomaly motion
-	printf("\n------------Test Mean Anomaly Motion----------------------------------------------------------------------------------------------------------------------\n");
-	Satellite *sat = (Satellite*) malloc(sizeof(Satellite));
-	ReadNoradTLE(sat, '0','1','2');
-	double mean_anom;double mean_motion;
-	// sample time interval is 25 julian days
-	mean_anomaly_motion(&mean_anom, &mean_motion, 50, 25, sat->meanan, sat->meanmo, 0.5, 100);
-	printf("\n Testing mean-anom-motion with time interval of 25 julian date, imported sat meananom and mean motion, 0.5 n-dot-meanmotion, and 100 ndotdotmeanmotion\n");
-	printf("Heres the Mean anomaly: %f and the mean motion: %f\n", mean_anom, mean_motion);
-	printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-
-	printf("\n------------Test the Station ECF------------------------------------------------------------------------------------------------\n");
-	Vector *s;
-	s=(Vector*)malloc(2*sizeof(Vector));
-	s->x=0;
-	s->y=0;
-	s->z=0;
-	station_ECF(s, 45, 45, 45);
-	printf("\n Station_ECF with inputs of station_ECF(s, 45, 45, 45) returns:  X=%f  Y=%f  Z=%f \n", s->x, s->y, s->z);
-	printf("\n The result should be ECEF from Latitude,Longitude, Height (ellipsoidal) X : 3194.442   km, Y : 3194.442   km, Z : 4487.38   km\n");
-	printf("\n as confirmed with an online calculator http://www.oc.nps.edu/oc2902w/coord/llhxyz.htm \n");
-	printf("----------------------------------------------------------------------------------------------------------------------------------\n");
-
-	printf("\n--------------------------Testing range_topo2look_angles:------------------------\n");
-	Vector *vec1;
-	vec1 = (Vector*)malloc(sizeof(Vector));
-	vec1->x = 7; vec1->y = 2; vec1->z = 4; vec1->mag = 17;
-	Vector *vec2;
-	vec2 = (Vector*)malloc(sizeof(Vector));
-	vec2->x = 5; vec2->y = 5; vec2->z = 4; vec2->mag = 7;
-	double a1, b1, c1, d1;
-	LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
-	range_topo2look_angles(LA, a1, b1, c1, d1, vec1, vec2);
-	printf("azimuth: %f\n", LA->azimuth);
-	printf("elevation: %f\n", LA->elevation);
-	printf("azimuth velocity: %f\n", LA->azimuth_velocity);
-	printf("elevation velocity: %f\n", LA->elevation_velocity);
-	printf("----------------------------------------------------------------------------------------------------------------------------------\n");
-
-
-	printf("\n------------Testing range_ECF2topo----------------\n");
-	Vector *vrtp;vrtp = (Vector*)malloc(sizeof(Vector));
-	Vector *vrtv;vrtv = (Vector*)malloc(sizeof(Vector));
-	Vector *vsbp;vsbp = (Vector*)malloc(sizeof(Vector));
-	vsbp->x = 5; vsbp->y = 5; vsbp->z = 4; vsbp->mag = sqrt(66);
-	Vector *vsep;vsep = (Vector*)malloc(sizeof(Vector));
-	vsep->x = 5; vsep->y = 5; vsep->z = 4; vsep->mag = sqrt(66);
-	Vector *vsev;vsev = (Vector*)malloc(sizeof(Vector));
-	vsev->x = 1; vsev->y = 2; vsev->z = 3; vsev->mag = sqrt(14);
-	double slong = 281.0;
-	double slat = 45.0;
-	printf("\n The input is V - [5,5,4,sqrt(66)] V2 - [5,5,4,sqrt(66)] v3 - [1,2,3,sqrt(14]\n");
-	printf("\n The input longitude is 281 degrees and latitude of 45 degrees\n");
-	range_ECF2topo(vrtp, vrtv, *vsbp, vsep, vsev, slong, slat);
-	printf("------------------------------------------\n");
-	printf("The range topo position vector is: \n");
-	printf("Px is: %f\n", vrtp->x);
-	printf("Py is: %f\n", vrtp->y);
-	printf("Pz is: %f\n", vrtp->z);
-	printf("------------------------------------------\n");
-	printf("The range topo velocity vector is: \n");
-	printf("Vx is: %f\n", vrtv->x);
-	printf("Vy is: %f\n", vrtv->y);
-	printf("Vz is: %f\n", vrtv->z);
-	printf("------------------------------------------\n");
-
-
-	printf("\n-----------------------------Testing sat_ECI-----------------------------------------------------\n");
-	// Create Position and Vel vectors
-	struct Vector Pos, Vel;
-	Pos.x = 0;Pos.y = 0;Pos.z = 0;Pos.mag = magntd(Pos);
-	Vel.x = 0;Vel.y = 0;Vel.z = 0;Vel.mag = magntd(Vel);
-	// Use orbital parameters from GPS satellite TLE
-	double e, ecc_anomaly, semi, long_asc_node, w, i, nt, RAAN;
-	e = 0.0163836;
-	ecc_anomaly = 70.8137; // radians = 70.8137 deg
-	//semimajor axis in km
-	semi = 26562;long_asc_node = 112.038;RAAN = 81.653;
-	//w and inclination in degrees
-	w = 93.0850;i = 51.5649;
-	// revs/sec
-	nt = 0.000023213;
-	printf("Currently using orbital Parameters of: \n");
-	printf("e = 0.0163836, ecc_anomaly = 70.8137  semi-major-axis = 26562, long_asc_node = 112.038, RAAN = 81.653\n");
-	printf("w = 93.0850;i = 51.5649; nt = 0.000023213 in rev/sec\n");
-	printf("Note that angles were converted to radians\n");
-	sat_ECI(&Pos, &Vel, e, ecc_anomaly*PI/180, semi, RAAN*PI/180, w*PI/180, i*PI/180, nt);
-	printf("The current position and velocity in ECI is: \n");
-	printf("Px is: %f\n", Pos.x);
-	printf("Py is: %f\n", Pos.y);
-	printf("Pz is: %f\n", Pos.z);
-	printf("The predicted STK values for position are -7896.982740km, -24633.763428km, 5353.505305km \n");
-	printf("Vx is: %f\n", Vel.x);
-	printf("Vy is: %f\n", Vel.y);
-	printf("Vz is: %f\n", Vel.z);
-	printf("The predicted STK values for velocity are 2.145720km/s, -1.392020km/s, -2.937639km/s \n");
-
-	printf("\n-------------------------------------------------------------------------------------------------\n");
-
-	printf("\n-----------------------------Testing sat_ECF-----------------------------------------------------\n");
-	struct Vector PosECI, VelECI, POSECF, VELECF;
-	//initializing new pos/vel ECF vectors
-	POSECF.x = 0;POSECF.y = 0;POSECF.z = 0;POSECF.mag = magntd(POSECF);
-	VELECF.x = 0;VELECF.y = 0;VELECF.z = 0;VELECF.mag = magntd(VELECF);
-
-	// Setting the expected values for ECI velocity and positions i.e. what we should've got before
-	printf("This function uses the STK calculated values from the above test sat_ECI\n");
-	PosECI.x = -7896.982740;PosECI.y = -24633.763428;PosECI.z = 5353.505305;PosECI.mag = magntd(PosECI);
-	VelECI.x = 2.145720;VelECI.y = -1.392020;VelECI.z = -2.937639;VelECI.mag = magntd(VelECI);
-
-	double frac, day, epoch, Du, Tu, GMST00, theta_mid, r, theta_t;
-
-	// Calculating the Difference in JD between the start and J2000
-	frac = frcofd(24, 0, 0);day = doy(2017, 3, 11);epoch = 17000+day+frac;Du = jdatep(epoch) - jdatep(00001.5);	Tu = Du/36525;
-	GMST00 = 24110.54841 + 8640184.812866*Tu + 0.093104*pow(Tu,2) - 6.2*pow(10,-6)*pow(Tu,3);
-	GMST00 = fmod(GMST00, 86400);theta_mid = 2*3.14159*GMST00/86400;
-	r = 1.002737909350795+5.9006*pow(10,-11)*Tu - 5.9*pow(10, -15)*pow(Tu,2);
-	theta_t = theta_mid + 2*3.14159*r*(16*3600);
-
-	sat_ECF(&POSECF, &VELECF, theta_t, &PosECI, &VelECI);
-	printf("The position in ECF is: \n");
-	printf("Px is: %f\n", POSECF.x);
-	printf("Py is: %f\n", POSECF.y);
-	printf("Pz is: %f\n", POSECF.z);
-	printf("The predicted STK values for position are -23997.9889km, -9664.9km, 5341.405075km \n");
-
-	printf("The velocity in ECF is: \n");
-	printf("Vx is: %f\n", VELECF.x);
-	printf("Vy is: %f\n", VELECF.y);
-	printf("Vz is: %f\n", VELECF.z);
-	printf("The predicted STK values for velocity are -0.4km/s, -0.793789km/s, -2.934026km/s \n");
-
-	printf("theta_t is %f\n", theta_t);
-
-	printf("\n-------------------------------------------------------------------------------------------------\n");
-
-	//STK out tester
-	printf("---------------Testing STKout------------------\n");
-	double t[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	int size = 10;
-	char coordinatesys[] = "J2000";
-	struct Vector p[size];
-	struct Vector v[size];
-	for(int i=0; i<size; i++){
-		p[i].x = i+69;
-		p[i].y = i+59;
-		p[i].z = i+49;
 	}
-	for(int i=0; i<size; i++){
-		v[i].x = i+69;
-		v[i].y = i+59;
-		v[i].z = i+49;
-	}
-	int a = STKout(t, size, coordinatesys, p, v);
-	printf("Success Check of STK out should Return 0 and file will be in top directory: STkout returns: %d\n",a);
-	printf("\n------------------------------------------\n");
 
-	printf("------------------------------------------\n");
-	printf("\nTesting AnyKey() -- You must press ENTER to continue -- Comment out other code and test separately for robust test \n");
-	anykey();
-	printf("\nAnykey Works!\n");
-	printf("------------------------------------------\n");
+	printf("\nImporting TLE file sats...\n\n");
+	char *file = "TLE.txt";
+	Satellite sats[32];
+	ReadNoradTLE(sats, file);
+	printf("Complete\n");
+	int x;
+	for(x = 0;x < 1;){
+		printf("\n\nEnter the number next to the corresponding option:\n");
+		printf("1   view TLE data\n");
+		printf("2   edit TLE data\n");
+		printf("3   continue\n\n");
+		int input2;
+		printf("Entry: ");
+		fflush(stdout);
+		scanf("%d", &input2);
+
+		if(input2 == 1){
+			printf("\nEnter the satellite number you would like to view: ");
+			int num;
+			fflush(stdout);
+			scanf("%d", &num);
+
+			printf("\nInformation for sat number %d\n", num);
+			printf("\n    name is %s", sats[num].name);
+			printf("    refepoch is %f\n", sats[num].refepoch);
+			printf("    incl is %f\n", sats[num].incl);
+			printf("    raan is %f\n", sats[num].raan);
+			printf("    eccn is %f\n", sats[num].eccn);
+			printf("    argper is %f\n", sats[num].argper);
+			printf("    meanan is %f\n", sats[num].meanan);
+			printf("    meanmo is %f\n", sats[num].meanmo);
+			printf("    ndot is %f\n", sats[num].ndot);
+			printf("    nddot6 is %f\n", sats[num].nddot6);
+			printf("    bstar is %f\n", sats[num].bstar);
+			printf("    orbitnum is %f\n", sats[num].orbitnum);
+		}
+		if(input2 == 2){
+			printf("\nEnter the satellite number you would like to edit: ");
+			int num;
+			fflush(stdout);
+			scanf("%d", &num);
+
+			printf("\n1    name\n");
+			printf("2    refepoch\n");
+			printf("3    incl\n");
+			printf("4    raan\n");
+			printf("5    eccn\n");
+			printf("6    argper\n");
+			printf("7    meanan\n");
+			printf("8    meanmo\n");
+			printf("9    ndot\n");
+			printf("10   nddot6\n");
+			printf("11   bstar\n");
+			printf("12   orbitnum\n");
+
+			printf("\nWhat parameter would you like to edit: ");
+			int num2;
+			fflush(stdout);
+			scanf("%d", &num2);
+			printf("\n");
+			if(num2 == 1){
+				printf("name entry: ");
+				char *n;
+				fflush(stdout);
+				scanf("%c", n);
+				//sats[num].name = n;
+			}
+			if(num2 == 2){
+				printf("refepoch entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].refepoch = n;
+			}
+			if(num2 == 3){
+				printf("incl entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].incl = n;
+			}
+			if(num2 == 4){
+				printf("raan entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].raan = n;
+			}
+			if(num2 == 5){
+				printf("eccn entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].eccn = n;
+			}
+			if(num2 == 6){
+				printf("argper entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].argper = n;
+			}
+
+			if(num2 == 7){
+				printf("meanan entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].meanan = n;
+			}
+
+			if(num2 == 8){
+				printf("meanmo entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].meanmo = n;
+			}
+			if(num2 == 9){
+				printf("ndot entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].ndot = n;
+			}
+
+			if(num2 == 10){
+				printf("nddot6 entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].nddot6 = n;
+			}
+
+			if(num2 == 11){
+				printf("bstar entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].bstar = n;
+			}
+
+			if(num2 == 12){
+				printf("orbitnum entry: ");
+				double n;
+				fflush(stdout);
+				scanf("%lf", &n);
+				sats[num].orbitnum = n;
+			}
+
+		}
+		if(input2 == 3){x++;}
+	}
+
+	//------------------------------AOS/LOS---------------------------------------------
+
+
+	printf("\nOpening tracking file...\n\n");
+	FILE *fp = fopen("tracking_sched.txt","r+");
+
+	char line1[50]; //The first line in tracking_sched.txt -- Specifies the start date/time
+	char line2[50]; //The second line in tracking_sched.txt -- Specifies the stop date/time
+	char line3[31]; //The third line in tracking_sched.txt -- Specifies the time step
+	fgets(line1, 50, fp);
+	fgets(line2, 50, fp);
+	fgets(line3, 31, fp);
+
+	fclose(fp);
+
+	//Pull out the dates from each line
+	char date_start[20], date_stop[20], time_step[6];
+
+	strncpy(date_start, line1+26, 19);
+	strncpy(date_stop, line2+25, 19);
+	strncpy(time_step, line3+24, 5);
+	printf("Printing out the start date %s\n",date_start);
+	printf("Printing out the stop date %s\n",date_stop);
+	printf("Printing out the time step %s\n",time_step);
+
+	printf("\nCalculating AOS and LOS...\n");
+	//Convert each time_step to a double
+	double step;
+	step = atof(time_step);
+
+	double JulianDateStart, JulianDateStop;
+
+	JulianDateStart = dat2jd(date_start);
+	JulianDateStop = dat2jd(date_stop);
+
+
+	char *NAME[31];
+	double AOS[31], LOS[31];
+	int NUM[31];
+	int num = 0;
+
+
+	for(int j=1; j<32; j++){//Run through each satellite
+
+		double currentTime;
+		currentTime = JulianDateStart;
+		int acquired=0; //acquired=0 if the AOS has not been obtained and =1 if it has been obtained
+		int lost = 0; //lost = 0 if the sat has not been lost yet and =1 if the sat has been lost and is out of view
+
+		for( ;currentTime<JulianDateStop; currentTime = currentTime+frcofd(0,0,step)){//Run through each time step until we reach the end of the interval
+			double mA, mM;
+			double satEpoch = sats[j].refepoch;
+			double mA0 = sats[j].meanan;
+			double nMM = sats[j].meanmo;
+			double ndMM = sats[j].ndot;
+			double n2dMM = sats[j].nddot6;
+			mean_anomaly_motion(&mA, &mM, currentTime, satEpoch, mA0, nMM, ndMM, n2dMM);
+			double mMrev=mM/(2*PI);
+
+			double eccAnom = KeplerEqn(mA, sats[j].eccn);
+
+			Vector *eciPos, *eciVel;
+			eciPos = (Vector*)malloc(sizeof(Vector));
+			eciVel = (Vector*)malloc(sizeof(Vector));
+
+			double sMA = CUBE_ROOT(398600.4418/(4*PI*PI*mMrev*mMrev));
+			sat_ECI(eciPos, eciVel, sats[j].eccn, eccAnom, sMA, sats[j].raan*PI/180,sats[j].argper*PI/180, sats[j].incl*PI/180, mM);
+			Vector *ecfPos, *ecfVel;
+			ecfPos = (Vector*)malloc(sizeof(Vector));
+			ecfVel = (Vector*)malloc(sizeof(Vector));
+
+			double thetat = THETAN(sats[j].refepoch);
+			sat_ECF(ecfPos, ecfVel, thetat, eciPos, eciVel);
+			Vector *stnPos, *rtPos, *rtVel;
+			stnPos = (Vector*)malloc(sizeof(Vector));
+			station_ECF(stnPos, stn->stnlong, stn->stnlat, stn->stnalt);
+			rtPos = (Vector*)malloc(sizeof(Vector));
+			rtVel = (Vector*)malloc(sizeof(Vector));
+			range_ECF2topo(rtPos, rtVel, *stnPos, ecfPos, ecfVel, stn->stnlong, stn->stnlat);
+
+			double az;
+			double el;
+			double azV;
+			double elV;
+			LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
+			range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
+
+			if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
+				//If the satellite has already been acquired then don't add it again
+				NUM[num] = j;
+				NAME[num] = sats[j].name;
+				NAME[num][strlen(NAME[num])-1] = '\0'; //Just some formatting of the Name of the sat for printing.
+				NAME[num][strlen(NAME[num])-2] = '\0';//Without these two lines there are two \n operators in NAME[num]
+
+				AOS[num] = currentTime;
+				acquired = 1;
+			}
+			if(LA->elevation >= stn->az_el_lim.elmax && LA->elevation <= stn->az_el_lim.elmin && acquired==1){// Go in to this loop if the satellite is lost.
+				// You can only lose the satellite after it has been acquired
+				// hence acquired==1
+				LOS[num] = currentTime;
+				lost = 1; //the sat is now out of view
+				break;
+			}
+		}
+		if(acquired==1){
+			if(lost==0){//if the sat had been acquired but not lost then there is no LOS time.
+				LOS[num] = JulianDateStop;
+			}
+			num++;
+		}
+	}
+	printf("\nComplete\n\n");
+
+
+	//Print the AOS/LOS table to the console and write it to a file
+	FILE *filepoint;
+	filepoint = fopen("AOSLOS.txt", "w+");
+
+	printf("Sat No.		Name			AOS			LOS\n");
+	fprintf(filepoint, "Sat No.			Name					AOS					LOS\n");
+	for(int i=0;i<num;i++){
+
+		printf("%d	 %s %s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
+		printf("%s\n", jd2dat(LOS[i]));
+		fprintf(filepoint, "%d	 	%s	%s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
+		fprintf(filepoint, "%s\n", jd2dat(LOS[i]));
+	}
+	fclose(filepoint);
+
 
 
 	return 0;
+
 }

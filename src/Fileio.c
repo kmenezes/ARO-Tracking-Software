@@ -11,8 +11,11 @@
 #include <math.h>
 #include "FileIO.h"
 void Banner(){
-	printf("ENG4350 Team Info\n");
-	printf("Program Name\n");
+	printf("\n -------------------- \n");
+	printf("ENG4350 Team Info:\n");
+	printf("Keith Menezes\n");
+	printf("James Brook\n");
+	printf("Team C - Pointer - Memory Allocation - Masters\n");
 	time_t now;
 	time(&now);
 	struct tm* t;
@@ -20,8 +23,9 @@ void Banner(){
 	char date[80];
 	strftime (date, 80, "%Y-%m-%d", t);
 	puts(date);
-	printf("Version 1\n");
+	printf("Version 4\n");
 	printf("Welcome\n");
+	printf("\n -------------------- \n");
 }
 void ERRMSG (char* STRING){
 	printf("\a\n");
