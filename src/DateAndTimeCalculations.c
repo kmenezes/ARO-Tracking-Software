@@ -4,6 +4,7 @@
  *  Created on: Mar 4, 2017
  *      Author: james/keith
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -43,7 +44,7 @@ double jdatep(double EPOCH){
 	}
 	if(year <= 56){	year = 2000 + year;}
 	else{year = 1900 + year;}
-	JD = jdaty(year) + day + frac/100000000;
+	JD = jdaty(year) + day-1 + frac/100000000;
 	return JD;
 }
 double doy (int YR, int MO, int D){
