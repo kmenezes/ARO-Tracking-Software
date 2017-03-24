@@ -1,0 +1,3 @@
+Tracking start date/time: 2017-03-19-00:00:00
+Tracking stop date/time: 2017-03-19-01:00:00 
+Output time step (sec): 300.00
