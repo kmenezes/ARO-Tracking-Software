@@ -183,21 +183,16 @@ int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, dou
 	w = omega_argument_periapsis;
 	i = inclination;
 	n = nt_mean_motion;
-	// Calculating True anom. concerns with using our helper function
-	double true = 2*atan(sqrt((1+e)/(1-e))*tan(E/2));
+ 	double true = 2*atan(sqrt((1+e)/(1-e))*tan(E/2));
 	if(true<0){
 		true=true+2*PI;
 	}
-	//printf("True Anom: %f\n", true);
 	//First time derivative of True Anomaly
 	double true_dot = n*sqrt((1-pow(e,2)) / pow((1-e*cos(E)),2));
-	//printf("True Anom Derivative: %f\n", true_dot);
 	// range distance
 	double r = (a*(1-pow(e,2)) / (1+e*cos(true)));
-	//printf("Range: %f\n",r);
 	// First time derivative of the spacecraft range
 	double v = (a*e*(1-pow(e,2))*sin(true)*true_dot) / (pow((1+e*cos(true)),2));
-	//printf("Velocity: %f\n", v);
 
 	eci_position->x = r*(cos(capital_omega)*cos(w+true)-sin(capital_omega)*cos(i)*sin(w+true));
 	eci_position->y = r*(sin(capital_omega)*cos(w+true)+cos(capital_omega)*cos(i)*sin(w+true));
@@ -330,4 +325,33 @@ double KeplerEqn(double Mt_mean_anomaly,const double eccentricity){
 			curr += delta_curr;
 		}
 	return( is_negative ? offset - curr : offset + curr);
+}
+/*
+ * Function to print the AOS/LOS link strength
+ *Frequency band = 1227
+ *Frequency Antenna efficiency = 0.70
+ *Frequency Antenna diameter = 46
+ *Frequency Bandwidth = 2
+ *Frequency RCV Gain = 56
+ *Frequency RCV noise temp = 200
+ *
+ * */
+
+double linkstrength(double range){
+	double fre = 1227.0;
+	double eff = 0.7;
+	double diam = 46;//m
+	double BW = 2.;
+	double RCV_gain = 56.;
+	double RCV_noise = 200.;
+	double light = 3*10^8; // m/s
+
+	double EIRP = 8.3988; //3dBW
+	double La = 0.1; //dBW
+	double temp = pow((light/(4*PI*fre*range*1000)),2);
+	double Ls = 10*log(temp);// dB
+	double Gr = 10*log((((PI*PI) * (fre*fre) * (diam*diam) *eff)/light*light));// dB
+	double linksstren = EIRP - La + Gr + Ls +30;
+
+	return linksstren;
 }

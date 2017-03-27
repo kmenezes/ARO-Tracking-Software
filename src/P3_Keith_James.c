@@ -9,7 +9,8 @@
 #include "Matrix.h"
 #include "Vector.h"
 #include <time.h>
-#include <stdlib.h>#include <string.h>
+#include <stdlib.h>
+#include <string.h>
 #define CUBE_ROOT(X) (exp(log(X)/ 3.))
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
@@ -391,14 +392,14 @@ int main(void){
 			double elV;
 			LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
 			range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
-
+			double ss[31];
+			//ss[num] = linkstrength(rtPos->mag);
 			if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
 				//If the satellite has already been acquired then don't add it again
 				NUM[num] = j;
 				NAME[num] = sats[j].name;
 				NAME[num][strlen(NAME[num])-1] = '\0'; //Just some formatting of the Name of the sat for printing.
 				NAME[num][strlen(NAME[num])-2] = '\0';//Without these two lines there are two \n operators in NAME[num]
-
 				AOS[num] = currentTime;
 				acquired = 1;
 			}
@@ -407,36 +408,21 @@ int main(void){
 				// hence acquired==1
 				LOS[num] = currentTime;
 				lost = 1; //the sat is now out of view
-				break;
-			}
-		}
-		if(acquired==1){
-			if(lost==0){//if the sat had been acquired but not lost then there is no LOS time.
-				LOS[num] = JulianDateStop;
-			}
-			num++;
-		}
-	}
+				break;}}if(acquired==1){if(lost==0){//if the sat had been acquired but not lost then there is no LOS time.
+					LOS[num] = JulianDateStop;}num++;}}
 	printf("\nComplete\n\n");
-
-
 	//Print the AOS/LOS table to the console and write it to a file
 	FILE *filepoint;
 	filepoint = fopen("AOSLOS.txt", "w+");
-
 	printf("Sat No.		Name			AOS			LOS\n");
-	fprintf(filepoint, "Sat No.			Name					AOS					LOS\n");
+	fprintf(filepoint, "Sat No.			Name					AOS					LOS					Min. ExpectedLevel (dBm)\n");
 	for(int i=0;i<num;i++){
-
 		printf("%d	 %s %s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
 		printf("%s\n", jd2dat(LOS[i]));
 		fprintf(filepoint, "%d	 	%s	%s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
-		fprintf(filepoint, "%s\n", jd2dat(LOS[i]));
+		fprintf(filepoint, "%s", jd2dat(LOS[i]));
+	//	fprintf(filepoint,"%f\n",linkstrength(rtPos->mag));
 	}
 	fclose(filepoint);
-
-
-
 	return 0;
-
 }

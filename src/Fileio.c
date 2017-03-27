@@ -15,7 +15,7 @@ void Banner(){
 	printf("ENG4350 Team Info:\n");
 	printf("Keith Menezes\n");
 	printf("James Brook\n");
-	printf("Team C - Pointer - Memory Allocation - Masters\n");
+	printf("Team Pointer - Memory Allocation - Masters\n");
 	time_t now;
 	time(&now);
 	struct tm* t;

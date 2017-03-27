@@ -23,7 +23,7 @@ Web site,  http://www.projectpluto.com.  There was a long thread about
 solutions to Kepler's equation on sci.astro.amateur,  and I decided to
 go into excruciating detail as to how it's done below. */
 
-
+double linkstrength(double range);
 double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
 
 /*
