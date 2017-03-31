@@ -348,7 +348,7 @@ int main(void){
     int num = 0;
 
     double ss[31];
-    for(int j=1; j<32; j++){//Run through each satellite
+    for(int j=0; j<31; j++){//Run through each satellite
 
 	double currentTime;
 	currentTime = JulianDateStart;
