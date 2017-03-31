@@ -26,23 +26,18 @@ typedef enum {false,true} boolean;
 #define CUBE_ROOT( X)  (exp( log( X) / 3.))
 
 
-double THETAN(double TLEepoch){
-	double num = TLEepoch;
-	num = TLEepoch/1000;
-	double year = num - frac(num);
-	double day = TLEepoch - year*1000;
-	double yearf = year + 2000;
-	double JDy = jdaty(yearf);
-	double JD = JDy + day -1;
-	double rads = THETAJ(JD);
+double THETAN(double TLEepoch, double JDstart){
+	double JD;
+	JD = jdatep(TLEepoch);
+	double rads = THETAJ(JD, JDstart);
 	return rads;
 }
 
-double THETAJ (double JulianDate){
+double THETAJ (double JulianDate, double JulianDateStart){
 	double JDm;
-	if(JulianDate>=floor(JulianDate) + 0.5){JDm = floor(JulianDate) + 0.5;}
-	else{JDm = floor(JulianDate) - 0.5;}
-	double Du = JulianDate - 2451545.0;
+	if(JulianDateStart>=floor(JulianDateStart) + 0.5){JDm = floor(JulianDateStart) + 0.5;}
+	else{JDm = floor(JulianDateStart) - 0.5;}
+	double Du = JDm - 2451545.0;
 	double Tu = Du / 36525.0;
 	double GMST = 24110.54841 + 8640184.812866*Tu + 0.093104*Tu*Tu - 0.0000062*Tu*Tu*Tu;
 	for (;GMST > 86400;){

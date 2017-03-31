@@ -56,14 +56,14 @@ double n_2dots_mean_motion);
 // The function THETAJ returns the Greenwich Mean Sidereal Time in radians
 // or an epoch specified by Julian day JD. Reference: The 1992 Astronomical Almanac,
 // page B6. [Test: 2451544.50D0]
-double THETAJ(double JulianDate);
+double THETAJ (double JulianDate, double JulianDateStart);
 
 /*The function THETAN calculates the Greenwich Mean Sidereal Time for an epoch
 specified in the format used in the NORAD two-line element sets. (for example
 09054.71335794) It supports dates beyond the year 1999 assuming that two-digit years
 in the range 00-56 correspond to 2000-2056. It is only valid for dates through 2056
 December 31.*/
-double THETAN(double TLEepoch);
+double THETAN(double TLEepoch, double JDstart);
 
 
 #endif /* PROPAGATE_H_ */

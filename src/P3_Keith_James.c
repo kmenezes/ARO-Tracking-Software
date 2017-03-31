@@ -347,7 +347,7 @@ int main(void){
 	int NUM[31];
 	int num = 0;
 
-
+	double ss[31];
 	for(int j=1; j<32; j++){//Run through each satellite
 
 		double currentTime;
@@ -377,7 +377,7 @@ int main(void){
 			ecfPos = (Vector*)malloc(sizeof(Vector));
 			ecfVel = (Vector*)malloc(sizeof(Vector));
 
-			double thetat = THETAN(sats[j].refepoch);
+			double thetat = THETAJ(currentTime,JulianDateStart);
 			sat_ECF(ecfPos, ecfVel, thetat, eciPos, eciVel);
 			Vector *stnPos, *rtPos, *rtVel;
 			stnPos = (Vector*)malloc(sizeof(Vector));
@@ -392,8 +392,8 @@ int main(void){
 			double elV;
 			LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
 			range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
-			double ss[31];
-			//ss[num] = linkstrength(rtPos->mag);
+
+			ss[num] = linkstrength(rtPos->mag);
 			if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
 				//If the satellite has already been acquired then don't add it again
 				NUM[num] = j;
@@ -418,10 +418,11 @@ int main(void){
 	fprintf(filepoint, "Sat No.			Name					AOS					LOS					Min. ExpectedLevel (dBm)\n");
 	for(int i=0;i<num;i++){
 		printf("%d	 %s %s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
-		printf("%s\n", jd2dat(LOS[i]));
+		printf("%s", jd2dat(LOS[i]));
+		printf("\t%f\n",ss[i]);
 		fprintf(filepoint, "%d	 	%s	%s 	", NUM[i], NAME[i], jd2dat(AOS[i]));
 		fprintf(filepoint, "%s", jd2dat(LOS[i]));
-	//	fprintf(filepoint,"%f\n",linkstrength(rtPos->mag));
+		fprintf(filepoint," 	%f\n",ss[i]);
 	}
 	fclose(filepoint);
 	return 0;
