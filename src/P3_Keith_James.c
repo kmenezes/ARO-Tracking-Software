@@ -312,16 +312,16 @@ int main(void){
     printf("\nOpening tracking file...\n\n");
     FILE *fp = fopen("tracking_sched.txt","r+");
 
-    char line1[50]; //The first line in tracking_sched.txt -- Specifies the start date/time
-    char line2[50]; //The second line in tracking_sched.txt -- Specifies the stop date/time
-    char line3[31]; //The third line in tracking_sched.txt -- Specifies the time step
+    char line1[50];
+    char line2[50];
+    char line3[31];
     fgets(line1, 50, fp);
     fgets(line2, 50, fp);
     fgets(line3, 31, fp);
 
     fclose(fp);
 
-    //Pull out the dates from each line
+
     char date_start[20], date_stop[20], time_step[6];
 
     strncpy(date_start, line1+26, 19);
@@ -332,7 +332,7 @@ int main(void){
     printf("Printing out the time step %s\n",time_step);
 
     printf("\nCalculating AOS and LOS...\n");
-    //Convert each time_step to a double
+
     double step;
     step = atof(time_step);
 
@@ -348,14 +348,14 @@ int main(void){
     int num = 0;
 
     double ss[31];
-    for(int j=0; j<31; j++){//Run through each satellite
+    for(int j=0; j<31; j++){
 
 	double currentTime;
 	currentTime = JulianDateStart;
-	int acquired=0; //acquired=0 if the AOS has not been obtained and =1 if it has been obtained
-	int lost = 0; //lost = 0 if the sat has not been lost yet and =1 if the sat has been lost and is out of view
+	int acquired=0;
+	int lost = 0;
 
-	for( ;currentTime<JulianDateStop; currentTime = currentTime+frcofd(0,0,step)){//Run through each time step until we reach the end of the interval
+	for( ;currentTime<JulianDateStop; currentTime = currentTime+frcofd(0,0,step)){
 	    double mA, mM;
 	    double satEpoch = sats[j].refepoch;
 	    double mA0 = sats[j].meanan;
@@ -395,32 +395,30 @@ int main(void){
 
 	    ss[num] = linkstrength(rtPos->mag);
 	    if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
-		//If the satellite has already been acquired then don't add it again
+
 		NUM[num] = j;
 		NAME[num] = sats[j].name;
-		NAME[num][strlen(NAME[num])-1] = '\0'; //Just some formatting of the Name of the sat for printing.
-		NAME[num][strlen(NAME[num])-2] = '\0';//Without these two lines there are two \n operators in NAME[num]
+		NAME[num][strlen(NAME[num])-1] = '\0';
+		NAME[num][strlen(NAME[num])-2] = '\0';
 		AOS[num] = currentTime;
 		acquired = 1;
 	    }
 	    if(LA->elevation >= stn->az_el_lim.elmax && LA->elevation <= stn->az_el_lim.elmin && acquired==1){// Go in to this loop if the satellite is lost.
-		// You can only lose the satellite after it has been acquired
-		// hence acquired==1
 		LOS[num] = currentTime;
-		lost = 1; //the sat is now out of view
+		lost = 1;
 		break;
 	    }
 	}
 	if(acquired==1)
 	    {
 	    if(lost==0)
-		{//if the sat had been acquired but not lost then there is no LOS time.
+		{
 		LOS[num] = JulianDateStop;
 		}num++;
 	    }
     }
     printf("\nComplete\n\n");
-    //Print the AOS/LOS table to the console and write it to a file
+
     FILE *filepoint;
     filepoint = fopen("AOSLOS.txt", "w+");
     printf("Sat No.		Name			AOS			LOS		Min. ExpectedLevel (dBm)\n");
@@ -434,5 +432,68 @@ int main(void){
 	fprintf(filepoint," 	%f\n",ss[i]);
     }
     fclose(filepoint);
+
+
+    printf("\n\nEnter the satellite number you would like to track from the table (values in the first column): ");
+    int satNum;
+    fflush(stdout);
+    scanf("%d", &satNum);
+    Satellite sat = sats[satNum+1];
+    printf("\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
+    printf("\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
+    printf("-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+
+    double currentTime;
+    	currentTime = JulianDateStart;
+    	int acquired=0;
+    	int lost = 0;
+
+    for( ;currentTime<JulianDateStop; currentTime = currentTime+frcofd(0,0,step)){
+    	    double mA, mM;
+    	    double satEpoch = sat.refepoch;
+    	    double mA0 = sat.meanan;
+    	    double nMM = sat.meanmo;
+    	    double ndMM = sat.ndot;
+    	    double n2dMM = sat.nddot6;
+    	    mean_anomaly_motion(&mA, &mM, currentTime, satEpoch, mA0, nMM, ndMM, n2dMM);
+    	    double mMrev=mM/(2*PI);
+
+    	    double eccAnom = KeplerEqn(mA, sat.eccn);
+
+    	    Vector *eciPos, *eciVel;
+    	    eciPos = (Vector*)malloc(sizeof(Vector));
+    	    eciVel = (Vector*)malloc(sizeof(Vector));
+
+    	    double sMA = CUBE_ROOT(398600.4418/(4*PI*PI*mMrev*mMrev));
+    	    sat_ECI(eciPos, eciVel, sat.eccn, eccAnom, sMA, sat.raan*PI/180,sat.argper*PI/180, sat.incl*PI/180, mM);
+    	    Vector *ecfPos, *ecfVel;
+    	    ecfPos = (Vector*)malloc(sizeof(Vector));
+    	    ecfVel = (Vector*)malloc(sizeof(Vector));
+
+    	    double thetat = THETAJ(currentTime,JulianDateStart);
+    	    sat_ECF(ecfPos, ecfVel, thetat, eciPos, eciVel);
+    	    Vector *stnPos, *rtPos, *rtVel;
+    	    stnPos = (Vector*)malloc(sizeof(Vector));
+    	    station_ECF(stnPos, stn->stnlong, stn->stnlat, stn->stnalt);
+    	    rtPos = (Vector*)malloc(sizeof(Vector));
+    	    rtVel = (Vector*)malloc(sizeof(Vector));
+    	    range_ECF2topo(rtPos, rtVel, *stnPos, ecfPos, ecfVel, stn->stnlong, stn->stnlat);
+
+    	    double az;
+    	    double el;
+    	    double azV;
+    	    double elV;
+    	    LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
+    	    range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
+
+    	    ss[num] = linkstrength(rtPos->mag);
+
+    	    printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t\t\t%f\n", jd2dat(currentTime),LA->azimuth,LA->elevation,LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z),linkstrength(rtPos->mag));
+
+
+    	}
+
     return 0;
 }
