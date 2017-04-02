@@ -16,3 +16,8 @@ The purpose of this software is to:
 ## Version 4 - Check the updates March 26th 2017
 
 [ENG-4350-P4-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P4-JK.pdf)
+
+
+## Version 6 - Check the updates April 2nd 2017
+
+[ENG-4350-P5-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P5-JK.pdf)
