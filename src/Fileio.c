@@ -23,7 +23,7 @@ void Banner(){
 	char date[80];
 	strftime (date, 80, "%Y-%m-%d", t);
 	puts(date);
-	printf("Version 4\n");
+	printf("Version 5\n");
 	printf("Welcome\n");
 	printf("\n -------------------- \n");
 }
