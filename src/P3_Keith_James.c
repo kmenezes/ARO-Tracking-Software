@@ -439,11 +439,17 @@ int main(void){
     fflush(stdout);
     scanf("%d", &satNum);
     Satellite sat = sats[satNum+1];
+    FILE *xp;
+    xp = fopen("TrackingData.txt", "w+");
     printf("\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
     printf("\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
+    fprintf(xp,"\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(xp,"UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
+    fprintf(xp,"\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
+    fprintf(xp,"-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
     double currentTime;
     	currentTime = JulianDateStart;
@@ -491,9 +497,8 @@ int main(void){
     	    ss[num] = linkstrength(rtPos->mag);
 
     	    printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t\t\t%f\n", jd2dat(currentTime),LA->azimuth,LA->elevation,LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z),linkstrength(rtPos->mag));
-
-
+    	    fprintf(xp,"%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t\t\t%f\n", jd2dat(currentTime),LA->azimuth,LA->elevation,LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z),linkstrength(rtPos->mag));
     	}
-
+    fclose(fp);
     return 0;
 }
