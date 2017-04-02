@@ -8,16 +8,14 @@ The purpose of this software is to:
 * Apply theoretical knowledge of orbital mechanics, RF signal transmission to a practical problem
 * Introduce the large dish antenna measurement technique by using a celestial source
 
-## Version 3 - Check the updates below March 19th, 2017
+## Version 5 - Check the updates April 2nd 2017
 
-[ENG-4350-P3-James-Keith.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P3-James-Keith.pdf)
-
+[ENG-4350-P5-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P5-JK.pdf)
 
 ## Version 4 - Check the updates March 26th 2017
 
 [ENG-4350-P4-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P4-JK.pdf)
 
+## Version 3 - Check the updates below March 19th, 2017
 
-## Version 6 - Check the updates April 2nd 2017
-
-[ENG-4350-P5-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P5-JK.pdf)
+[ENG-4350-P3-James-Keith.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P3-James-Keith.pdf)
