@@ -29,8 +29,11 @@ double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
 /*
  * Function to find the current satellite position and velocity in the topocentric system
 coordinates.*/
-int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Station *stn, Vector *sat_ecf_position,
-		Vector *sat_ecf_velocity)
+int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity,
+Vector station_body_position, Vector *sat_ecf_position,
+Vector *sat_ecf_velocity, double station_longitude,
+double station_latitude);
+
 
 // Function to calculate the current satellite position and velocity in ECF coordinates.
 int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity,
