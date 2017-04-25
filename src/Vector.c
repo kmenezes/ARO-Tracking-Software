@@ -9,7 +9,7 @@
 #include "Vector.h"
 #include <stdlib.h>
 #include <math.h>
-
+#define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 double myangle(Vector *v1, Vector *v2){
 	double theta, n, d;
 	n = v1->x*v2->x + v1->y*v2->y + v1->z*v2->z;
@@ -47,19 +47,23 @@ int vecadd(Vector*v3, Vector*v1, Vector*v2){
 	v3->mag = magntd(*v3);
 	return 0;
 }
+
 int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
-	double PI=3.1415926535897932384626433832795028841971693993751058209749445923;
-	double X, Y, Z, n, a, e2, f;
-	f=1/298.257223563;
-	double lat_rad, long_rad;
+	double alt, lat_rad, long_rad;
+	alt=station_elevation/1000;
 	lat_rad=station_latitude*(PI/180);
 	long_rad=station_longitude*(PI/180);
-	e2=2*f-f*f;
-	a=6378137;
-	n=a/(sqrt(1-e2*sin(lat_rad)*sin(lat_rad)));
-	X=(n+station_elevation)*cos(lat_rad)*cos(long_rad);
-	Y=(n+station_elevation)*cos(lat_rad)*sin(long_rad);
-	Z=(n*(1-e2)+station_elevation)*sin(lat_rad);
+
+	double X, Y, Z, n, a, e2, f;
+	f=1/298.25722363;
+	e2=2*f-pow(f,2);
+	a=6378.137; //in m
+	n=a/(sqrt(1-e2*pow(sin(lat_rad),2)));
+
+	X=(n+alt)*cos(lat_rad)*cos(long_rad);
+	Y=(n+alt)*cos(lat_rad)*sin(long_rad);
+	Z=(n*(1-e2)+alt)*sin(lat_rad);
+
 	stn_ECF_pos->x=X;
 	stn_ECF_pos->y=Y;
 	stn_ECF_pos->z=Z;
