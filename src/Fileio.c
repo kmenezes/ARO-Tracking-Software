@@ -1,9 +1,4 @@
-/*
- * FileIO.c
- *
- *  Created on: Mar 3, 2017
- *      Author: james/keith
- */
+
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -130,6 +125,7 @@ int ReadStationFile(Station *Stn, char STNFIL) {
 	}
 }
 
+
 int ReadNoradTLE(Satellite sats[], char *file) {
 	FILE *fp = fopen(file,"r+");
 	for (int i = 0; i < 32; i++) {
@@ -148,6 +144,7 @@ int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 		INT_DES_1,
 		INT_DES_2,
 		INT_DES_3,
+		//EPOCH_YEAR,
 		EPOCH,
 		MEAN_DOT,
 		MEAN_2_DOT,
@@ -177,6 +174,8 @@ int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 		{  9, 11 }, //4
 		{ 11, 14 }, //5
 		{ 14, 17 }, //6
+		//{ 18, 20 },
+		//{ 20, 32 },
 		{ 18, 32 }, //7
 		{ 33, 43 }, //8
 		{ 44, 52 }, //9
@@ -237,3 +236,4 @@ int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 
 	return 0;
 }
+

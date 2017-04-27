@@ -1,12 +1,6 @@
-/*
- * DateAndTimeCalculations.h
- *
- *  Created on: Mar 4, 2017
- *      Author: james
- */
 
-#ifndef DATEANDTIMECALCULATIONS_H_
-#define DATEANDTIMECALCULATIONS_H_
+#ifndef DATEFUN_H_
+#define DATEFUN_H_
 
 double jdaty(double YEAR);
 double jdatep(double EPOCH);
@@ -16,4 +10,4 @@ double dat2jd (char *DateString);
 char* jd2dat(double JulianDate);
 char* curday();
 
-#endif /* DATEANDTIMECALCULATIONS_H_ */
+#endif /* DATEFUN_H_ */

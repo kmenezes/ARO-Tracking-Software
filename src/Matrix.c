@@ -1,10 +1,3 @@
-/*
- * Matrix.c
- *
- *  Created on: Mar 4, 2017
- *      Author: james
- */
-
 #include "Matrix.h"
 #include "Vector.h"
 #include <Math.h>
@@ -12,11 +5,11 @@
 #include <stdio.h>
 
 int zero(Matrix *M,int m,int n){
-	M->matrix = (double **)calloc(m,sizeof(double));
+	M->elem = (double **)calloc(m,sizeof(double));
 	int count = 0;
 	while(count<m){
 		double *a = calloc(n,sizeof(double));
-		M->matrix[count]= a;
+		M->elem[count]= a;
 		count = count +1;
 	}
 	M->row=m;
@@ -42,15 +35,15 @@ int mult(Matrix *M3,Matrix *M1 ,Matrix *M2){
 		if(maxi==maxj){
 			while(i<=maxi){
 				while (j<=maxj){
-					sum1=M1->matrix[k][g];
-					sum2=M2->matrix[j][i];
+					sum1=M1->elem[k][g];
+					sum2=M2->elem[j][i];
 					sum=sum1*sum2+sum;
 					j =j+1;
 					g= g+1;
 				}
 				j=0;
 				g=0;
-				M3->matrix[k][i] = sum;
+				M3->elem[k][i] = sum;
 				sum=0;
 				if(i==maxi){
 					if(k==maxj){
@@ -63,4 +56,3 @@ int mult(Matrix *M3,Matrix *M1 ,Matrix *M2){
 				i = i+1;}}}
 	return 0;
 }
-

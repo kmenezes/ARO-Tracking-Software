@@ -1,9 +1,4 @@
-/*
- * Propagate.h
- *
- *  Created on: Mar 5, 2017
- *      Author: user
- */
+
 #include "Vector.h"
 #ifndef PROPAGATE_H_
 #define PROPAGATE_H_
@@ -14,52 +9,28 @@ typedef struct LookAngles {
 	double azimuth;
 	double elevation;
 } LookAngles;
-// Function to find the current satellite look-angles at the station position.
-void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity);
-double trueanom(double eccentricity, double E);
 
-/* For a full description of this function,  see KEPLER.HTM on the Guide
-Web site,  http://www.projectpluto.com.  There was a long thread about
-solutions to Kepler's equation on sci.astro.amateur,  and I decided to
-go into excruciating detail as to how it's done below. */
 
-double linkstrength(double range);
-double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
+double THETAJ(double JulianDate, double JulianDateStart);
 
-/*
- * Function to find the current satellite position and velocity in the topocentric system
-coordinates.*/
-int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position, Vector *sat_ecf_velocity, double station_longitude, double station_latitude);
-
-// Function to calculate the current satellite position and velocity in ECF coordinates.
-int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity,
-double theta_t, Vector *eci_position, Vector *eci_velocity);
-
-// Function to calculate the current satellite position and velocity in ECI coordinates.
-int sat_ECI(Vector *eci_position, Vector *eci_velocity,
-double eccentricity, double ecc_anomaly, double a_semi_major_axis,
-double omega_longitude_ascending_node, double omega_argument_periapsis,
-double inclination, double nt_mean_motion);
-
-// Function to calculate current mean anomaly and mean motion of the satellite
-int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion,
-double time, double ts_sat_epoch,
-double M0_mean_anomaly,
-double n_mean_motion,
-double n_dot_mean_motion,
-double n_2dots_mean_motion);
-
-// The function THETAJ returns the Greenwich Mean Sidereal Time in radians
-// or an epoch specified by Julian day JD. Reference: The 1992 Astronomical Almanac,
-// page B6. [Test: 2451544.50D0]
-double THETAJ (double JulianDate, double JulianDateStart);
-
-/*The function THETAN calculates the Greenwich Mean Sidereal Time for an epoch
-specified in the format used in the NORAD two-line element sets. (for example
-09054.71335794) It supports dates beyond the year 1999 assuming that two-digit years
-in the range 00-56 correspond to 2000-2056. It is only valid for dates through 2056
-December 31.*/
 double THETAN(double TLEepoch, double JDstart);
 
+double trueanom(double eccentricity, double E);
+
+int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion, double time, double ts_sat_epoch, double M0_mean_anomaly, double n_mean_motion, double n_dot_mean_motion, double n_2dots_mean_motion);
+
+double near_parabolic( const double ecc_anom, const double e);
+
+double KeplerEqn(double Mt_mean_anomaly, const double eccentricity);
+
+int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, double ecc_anomaly, double a_semi_major_axis, double omega_longitude_ascending_node, double omega_argument_periapsis, double inclination, double nt_mean_motion);
+
+int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity, double theta_t, Vector *eci_position, Vector *eci_velocity);
+
+int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position, Vector *sat_ecf_velocity, double station_longitude, double station_latitude);
+
+void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity);
+
+double linkstrength(double range);
 
 #endif /* PROPAGATE_H_ */

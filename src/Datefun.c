@@ -1,9 +1,5 @@
-/*
- * DateAndTimeCalculations.c
- *
- *  Created on: Mar 4, 2017
- *      Author: james/keith
- */
+
+#include "Datefun.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -48,19 +44,19 @@ double jdatep(double EPOCH){
 }
 double doy (int YR, int MO, int D){
 	if(YR % 4 != 0){ int i;
-		double day = 0;
-		for (i=1; i<MO; i=i+1){
-			if(i==2){ day = day+28;
-			}
-			else if(i%2 == 0){
-				day = day+30;
-			}
-			else{
-				day = day+31;
-			}
+	double day = 0;
+	for (i=1; i<MO; i=i+1){
+		if(i==2){ day = day+28;
 		}
-		day = day+D;
-		return day;
+		else if(i%2 == 0){
+			day = day+30;
+		}
+		else{
+			day = day+31;
+		}
+	}
+	day = day+D;
+	return day;
 	}
 	else{
 		int i;
@@ -206,30 +202,30 @@ char* jd2dat(double JulianDate) {
 
 char* curday(){
 	{
-	 	time_t rt;
-	 	char *d = malloc(19);
-	    struct tm * ti;
-	    time ( &rt );
-	    ti = localtime ( &rt );
-	    char Y[5];
-	    sprintf(Y, "%.2d-", ti->tm_year + 1900);
-	    char M[3];
-	    sprintf(M, "%.d-", ti->tm_mon + 1);
-	    char D[3];
-	    sprintf(D, "%.d ", ti->tm_mday);
-	    char H[3];
-	    sprintf(H, "%.d:", ti->tm_hour);
-	    char MIN[3];
-	    sprintf(MIN, "%.d:", ti->tm_min);
-	    char SEC[3];
-	    sprintf(SEC, "%.d", ti->tm_sec);
-	    strcpy(d, Y);
-	    strcat(d, M);
-	    strcat(d, D);
-	    strcat(d, H);
-	    strcat(d, MIN);
-	    strcat(d, SEC);
-	    return d;
+		time_t rt;
+		char *d = malloc(19);
+		struct tm * ti;
+		time ( &rt );
+		ti = localtime ( &rt );
+		char Y[5];
+		sprintf(Y, "%.2d-", ti->tm_year + 1900);
+		char M[3];
+		sprintf(M, "%.d-", ti->tm_mon + 1);
+		char D[3];
+		sprintf(D, "%.d ", ti->tm_mday);
+		char H[3];
+		sprintf(H, "%.d:", ti->tm_hour);
+		char MIN[3];
+		sprintf(MIN, "%.d:", ti->tm_min);
+		char SEC[3];
+		sprintf(SEC, "%.d", ti->tm_sec);
+		strcpy(d, Y);
+		strcat(d, M);
+		strcat(d, D);
+		strcat(d, H);
+		strcat(d, MIN);
+		strcat(d, SEC);
+		return d;
 	}
 
 

@@ -1,16 +1,13 @@
-/*
- * Vector.c
- *
- *  Created on: Mar 2, 2017
- *      Author: james_keith
- */
 
-#include <stdio.h>
 #include "Vector.h"
+#include <Math.h>
 #include <stdlib.h>
-#include <math.h>
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
+/*
+ * Returns the angle between vectors v1 and v2
+ */
 double myangle(Vector *v1, Vector *v2){
+
 	double theta, n, d;
 	n = v1->x*v2->x + v1->y*v2->y + v1->z*v2->z;
 	double maga, magb;
@@ -20,34 +17,59 @@ double myangle(Vector *v1, Vector *v2){
 	theta=acos(n/d);
 	return theta;
 }
-double magntd(struct Vector V){
-	double magnitude = 0;
-	magnitude = sqrt(pow(V.x,2) + pow(V.y,2) + pow(V.z,2));
-	return magnitude;
+
+/*
+ * Returns the scalar magnitude of a vector
+ */
+double magntd(struct Vector VECTR){
+	double m=sqrt(pow(VECTR.x, 2) + pow(VECTR.y, 2) + pow(VECTR.z, 2));
+	return m;
 }
-int mycross(Vector*v3, Vector*v1, Vector*v2){
-	if (v3 == NULL){
+
+/*
+ * Calculates the vector cross product of two input vectors v1, v2
+ * Returns -1 if v3==NULL
+ * Returns 0 otherwise
+ */
+int mycross(Vector *v3, Vector *v1, Vector *v2){
+
+	double X, Y, Z;
+	v3->x=v1->y*v2->z-v1->z*v2->y;
+	v3->y=-(v1->x*v2->z-v1->z*v2->x);
+	v3->z=v1->x*v2->y-v1->y*v2->x;
+	double maga, magb;
+	maga=magntd(*v1);
+	magb=magntd(*v2);
+
+	v3->mag=maga*magb*sin(myangle(v1,v2));
+
+	if(v3==NULL){
 		return -1;
 	}
-	v3->x = v1->y*v2->z - v1->z*v2->y;
-	v3->y = v1->z*v2->x - v1->x*v2->z;
-	v3->z = v1->x*v2->y - v1->y*v2->x;
-	double mag1 = magntd(*v1);
-	double mag2 = magntd(*v2);
-	v3->mag = mag1*mag2*sin(myangle(v1, v2));
-	return 0;
-}
-int vecadd(Vector*v3, Vector*v1, Vector*v2){
-	if(v3 == NULL){
-		return -1;
-	}
-	v3->x = v1->x + v2->x;
-	v3->y = v1->y + v2->y;
-	v3->z = v1->z + v2->z;
-	v3->mag = magntd(*v3);
 	return 0;
 }
 
+/*
+ * Adds the vectors v1 and v2 together to produce v3
+ */
+int vecadd(Vector *v3, Vector *v1, Vector *v2){
+
+	v3->x=v1->x+v2->x;
+	v3->y=v1->y+v2->y;
+	v3->z=v1->z+v2->z;
+
+	v3->mag=magntd(*v3);
+
+	if(v3==NULL){
+		return -1;
+	}
+	return 0;
+
+}
+
+/*
+ * Subroutine to find the station position in the earth-centred, fixed (ECF) coordinate system.
+ */
 int station_ECF(Vector *stn_ECF_pos, double station_longitude, double station_latitude, double station_elevation){
 	double alt, lat_rad, long_rad;
 	alt=station_elevation/1000;

@@ -1,9 +1,10 @@
-/*
- * STKout.c
- *
- *  Created on: Mar 9, 2017
- *      Author: User
- */
+
+#include "Check.h"
+#include "Vector.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
 #include "Vector.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,4 +37,3 @@ int STKout(double *time, int size_time_array, char *filename, char CoordinateSys
 
 	return 0;
 }
-

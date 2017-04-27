@@ -1,11 +1,12 @@
+
 #include <stdio.h>
 #include <math.h>
 #include "Propagate.h"
 #include "Basic.h"
 #include "FileIO.h"
 #include "Vector.h"
-#include "STKout.h"
-#include "DateAndTimeCalculations.h"
+#include "Check.h"
+#include "Datefun.h"
 #include "Matrix.h"
 #include "Vector.h"
 #include <time.h>
@@ -86,7 +87,7 @@ int mean_anomaly_motion (double *Mt_mean_anomaly, double *nt_mean_motion, double
 }
 
 /*
- * Function to solve Keplerï¿½s equation, returns eccentric anomaly
+ * Function to solve Kepler’s equation, returns eccentric anomaly
  * TESTED, WORKING
  */
 
@@ -221,6 +222,7 @@ int sat_ECI(Vector *eci_position, Vector *eci_velocity, double eccentricity, dou
 	if(true<0){
 		true=true+2*PI;
 	}
+	//printf("True Anom: %f\n", true);
 	//First time derivative of True Anomaly
 	double true_dot = n*sqrt((1-pow(e,2)) / pow((1-e*cos(E)),2));
 	//printf("True Anom Derivative: %f\n", true_dot);
@@ -258,29 +260,29 @@ int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity, double theta_t, 
 	zero(&V_2, 3, 1);
 
 	// Setting up the first transformation matrix
-	T1.matrix[0][0] = cos(theta_t); T1.matrix[0][1] = sin(theta_t);T1.matrix[0][2] = 0;
-	T1.matrix[1][0] = -sin(theta_t);T1.matrix[1][1] = cos(theta_t);T1.matrix[1][2] = 0;
-	T1.matrix[2][0] = 0;T1.matrix[2][1] = 0;T1.matrix[2][2] = 1;
+	T1.elem[0][0] = cos(theta_t); T1.elem[0][1] = sin(theta_t);T1.elem[0][2] = 0;
+	T1.elem[1][0] = -sin(theta_t);T1.elem[1][1] = cos(theta_t);T1.elem[1][2] = 0;
+	T1.elem[2][0] = 0;T1.elem[2][1] = 0;T1.elem[2][2] = 1;
 	// setting up the satellite ECF Position Matrix
-	sat_ecf_position->x = T1.matrix[0][0]*eci_position->x + T1.matrix[0][1]*eci_position->y + T1.matrix[0][2]*eci_position->z;
-	sat_ecf_position->y = T1.matrix[1][0]*eci_position->x + T1.matrix[1][1]*eci_position->y + T1.matrix[1][2]*eci_position->z;
-	sat_ecf_position->z = T1.matrix[2][0]*eci_position->x + T1.matrix[2][1]*eci_position->y + T1.matrix[2][2]*eci_position->z;
-	// Setting  up the second transformation matrix
-	T2.matrix[0][0] = -sin(theta_t);T2.matrix[0][1] = cos(theta_t);T2.matrix[0][2] = 0;
-	T2.matrix[1][0] = -cos(theta_t);T2.matrix[1][1] = -sin(theta_t);T2.matrix[1][2] = 0;
-	T2.matrix[2][0] = 0;T2.matrix[2][1] = 0;T2.matrix[2][2] = 0;
-	// Setting up the velocity matrix
-	V_1.matrix[0][0] = T1.matrix[0][0]*eci_velocity->x + T1.matrix[0][1]*eci_velocity->y + T1.matrix[0][2]*eci_velocity->z;
-	V_1.matrix[1][0] = T1.matrix[1][0]*eci_velocity->x + T1.matrix[1][1]*eci_velocity->y + T1.matrix[1][2]*eci_velocity->z;
-	V_1.matrix[2][0] = T1.matrix[2][0]*eci_velocity->x + T1.matrix[2][1]*eci_velocity->y + T1.matrix[2][2]*eci_velocity->z;
-	// calculating up the position matrix
-	V_2.matrix[0][0] = -theta_dot*(T2.matrix[0][0]*eci_position->x + T2.matrix[0][1]*eci_position->y + T2.matrix[0][2]*eci_position->z);
-	V_2.matrix[1][0] = -theta_dot*(T2.matrix[1][0]*eci_position->x + T2.matrix[1][1]*eci_position->y + T2.matrix[1][2]*eci_position->z);
-	V_2.matrix[2][0] = -theta_dot*(T2.matrix[2][0]*eci_position->x + T2.matrix[2][1]*eci_position->y + T2.matrix[2][2]*eci_position->z);
-	// setting the sat_ecf_velocity matrix
-	sat_ecf_velocity->x = V_1.matrix[0][0] - V_2.matrix[0][0];
-	sat_ecf_velocity->y = V_1.matrix[1][0] - V_2.matrix[1][0];
-	sat_ecf_velocity->z = V_1.matrix[2][0] - V_2.matrix[2][0];
+	sat_ecf_position->x = T1.elem[0][0]*eci_position->x + T1.elem[0][1]*eci_position->y + T1.elem[0][2]*eci_position->z;
+	sat_ecf_position->y = T1.elem[1][0]*eci_position->x + T1.elem[1][1]*eci_position->y + T1.elem[1][2]*eci_position->z;
+	sat_ecf_position->z = T1.elem[2][0]*eci_position->x + T1.elem[2][1]*eci_position->y + T1.elem[2][2]*eci_position->z;
+	// Setting  up the second transformation elem
+	T2.elem[0][0] = -sin(theta_t);T2.elem[0][1] = cos(theta_t);T2.elem[0][2] = 0;
+	T2.elem[1][0] = -cos(theta_t);T2.elem[1][1] = -sin(theta_t);T2.elem[1][2] = 0;
+	T2.elem[2][0] = 0;T2.elem[2][1] = 0;T2.elem[2][2] = 0;
+	// Setting up the velocity elem
+	V_1.elem[0][0] = T1.elem[0][0]*eci_velocity->x + T1.elem[0][1]*eci_velocity->y + T1.elem[0][2]*eci_velocity->z;
+	V_1.elem[1][0] = T1.elem[1][0]*eci_velocity->x + T1.elem[1][1]*eci_velocity->y + T1.elem[1][2]*eci_velocity->z;
+	V_1.elem[2][0] = T1.elem[2][0]*eci_velocity->x + T1.elem[2][1]*eci_velocity->y + T1.elem[2][2]*eci_velocity->z;
+	// calculating up the position elem
+	V_2.elem[0][0] = -theta_dot*(T2.elem[0][0]*eci_position->x + T2.elem[0][1]*eci_position->y + T2.elem[0][2]*eci_position->z);
+	V_2.elem[1][0] = -theta_dot*(T2.elem[1][0]*eci_position->x + T2.elem[1][1]*eci_position->y + T2.elem[1][2]*eci_position->z);
+	V_2.elem[2][0] = -theta_dot*(T2.elem[2][0]*eci_position->x + T2.elem[2][1]*eci_position->y + T2.elem[2][2]*eci_position->z);
+	// setting the sat_ecf_velocity elem
+	sat_ecf_velocity->x = V_1.elem[0][0] - V_2.elem[0][0];
+	sat_ecf_velocity->y = V_1.elem[1][0] - V_2.elem[1][0];
+	sat_ecf_velocity->z = V_1.elem[2][0] - V_2.elem[2][0];
 	return 0;
 }
 
@@ -289,8 +291,8 @@ int sat_ECF(Vector *sat_ecf_position, Vector *sat_ecf_velocity, double theta_t, 
 coordinates.
  */
 
-int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position,
-	Vector *sat_ecf_position, Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
+int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vector station_body_position, Vector *sat_ecf_position, Vector *sat_ecf_velocity, double station_longitude, double station_latitude){
+
 	double lat, lng;
 	lat=station_latitude*(PI/180);
 	lng=station_longitude*(PI/180);
@@ -298,9 +300,10 @@ int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vec
 	Matrix T;
 	zero(&T, 3, 1);
 
-	T.matrix[0][0]=station_body_position.x;
-	T.matrix[1][0]=station_body_position.y;
-	T.matrix[2][0]=station_body_position.z;
+	T.elem[0][0]=station_body_position.x;
+	T.elem[1][0]=station_body_position.y;
+	T.elem[2][0]=station_body_position.z;
+
 
 	int m, n;
 	m=3;n=3;
@@ -309,25 +312,25 @@ int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vec
 	zero(&Trans, m, n);
 
 	// in matrix form it looks like
-	Trans.matrix[0][0] = -sin(lng);
-	Trans.matrix[0][1] = cos(lng);
-	Trans.matrix[0][2] = 0;
-	Trans.matrix[1][0] = -cos(lng)*sin(lat);
-	Trans.matrix[1][1] = -sin(lng)*sin(lat);
-	Trans.matrix[1][2] = cos(lat);
-	Trans.matrix[2][0] = cos(lng)*cos(lat);
-	Trans.matrix[2][1] = sin(lng)*cos(lat);
-	Trans.matrix[2][2] = sin(lat);
+	Trans.elem[0][0] = -sin(lng);
+	Trans.elem[0][1] = cos(lng);
+	Trans.elem[0][2] = 0;
+	Trans.elem[1][0] = -cos(lng)*sin(lat);
+	Trans.elem[1][1] = -sin(lng)*sin(lat);
+	Trans.elem[1][2] = cos(lat);
+	Trans.elem[2][0] = cos(lng)*cos(lat);
+	Trans.elem[2][1] = sin(lng)*cos(lat);
+	Trans.elem[2][2] = sin(lat);
 
 	// perform position calculations
-	range_topo_position->x = Trans.matrix[0][0]*(sat_ecf_position->x - T.matrix[0][0]) + Trans.matrix[0][1]*(sat_ecf_position->y - T.matrix[1][0]) + Trans.matrix[0][2]*(sat_ecf_position->z - T.matrix[2][0]);
-	range_topo_position->y = Trans.matrix[1][0]*(sat_ecf_position->x - T.matrix[0][0]) + Trans.matrix[1][1]*(sat_ecf_position->y - T.matrix[1][0]) + Trans.matrix[1][2]*(sat_ecf_position->z - T.matrix[2][0]);
-	range_topo_position->z = Trans.matrix[2][0]*(sat_ecf_position->x - T.matrix[0][0]) + Trans.matrix[2][1]*(sat_ecf_position->y - T.matrix[1][0]) + Trans.matrix[2][2]*(sat_ecf_position->z - T.matrix[2][0]);
+	range_topo_position->x = Trans.elem[0][0]*(sat_ecf_position->x - T.elem[0][0]) + Trans.elem[0][1]*(sat_ecf_position->y - T.elem[1][0]) + Trans.elem[0][2]*(sat_ecf_position->z - T.elem[2][0]);
+	range_topo_position->y = Trans.elem[1][0]*(sat_ecf_position->x - T.elem[0][0]) + Trans.elem[1][1]*(sat_ecf_position->y - T.elem[1][0]) + Trans.elem[1][2]*(sat_ecf_position->z - T.elem[2][0]);
+	range_topo_position->z = Trans.elem[2][0]*(sat_ecf_position->x - T.elem[0][0]) + Trans.elem[2][1]*(sat_ecf_position->y - T.elem[1][0]) + Trans.elem[2][2]*(sat_ecf_position->z - T.elem[2][0]);
 
 	// perform velocity calculations
-	range_topo_velocity->x = Trans.matrix[0][0]*sat_ecf_velocity->x + Trans.matrix[0][1]*sat_ecf_velocity->y + Trans.matrix[0][2]*sat_ecf_velocity->z;
-	range_topo_velocity->y = Trans.matrix[1][0]*sat_ecf_velocity->x + Trans.matrix[1][1]*sat_ecf_velocity->y + Trans.matrix[1][2]*sat_ecf_velocity->z;
-	range_topo_velocity->z = Trans.matrix[2][0]*sat_ecf_velocity->x + Trans.matrix[2][1]*sat_ecf_velocity->y + Trans.matrix[2][2]*sat_ecf_velocity->z;
+	range_topo_velocity->x = Trans.elem[0][0]*sat_ecf_velocity->x + Trans.elem[0][1]*sat_ecf_velocity->y + Trans.elem[0][2]*sat_ecf_velocity->z;
+	range_topo_velocity->y = Trans.elem[1][0]*sat_ecf_velocity->x + Trans.elem[1][1]*sat_ecf_velocity->y + Trans.elem[1][2]*sat_ecf_velocity->z;
+	range_topo_velocity->z = Trans.elem[2][0]*sat_ecf_velocity->x + Trans.elem[2][1]*sat_ecf_velocity->y + Trans.elem[2][2]*sat_ecf_velocity->z;
 	return 0;
 }
 
@@ -337,7 +340,8 @@ int range_ECF2topo(Vector *range_topo_position, Vector *range_topo_velocity, Vec
  */
 void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, double azimuth_velocity, double elevation_velocity, Vector *range_topo_position, Vector *range_topo_velocity){
 
-	//The look angles are output in degrees
+	//The look angles are output in degrees FYI!!
+
 	azimuth=atan2(range_topo_position->x,range_topo_position->y);
 	elevation = atan(range_topo_position->z/sqrt(pow(range_topo_position->x,2) + pow(range_topo_position->y,2)));
 	azimuth=(azimuth*180)/PI;
