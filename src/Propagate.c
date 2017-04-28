@@ -343,9 +343,13 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 	//The look angles are output in degrees FYI!!
 
 	azimuth=atan2(range_topo_position->x,range_topo_position->y);
-	elevation = atan(range_topo_position->z/sqrt(pow(range_topo_position->x,2) + pow(range_topo_position->y,2)));
+	elevation = atan2(range_topo_position->z,sqrt(pow(range_topo_position->x,2) + pow(range_topo_position->y,2)));
 	azimuth=(azimuth*180)/PI;
-	elevation=(elevation*180)/PI;
+	elevation= (elevation*180)/PI;
+
+	if(azimuth < 0){
+		azimuth = azimuth +360;
+	}
 
 	Vector *rxy, *vxy;
 	rxy = (Vector*)malloc(sizeof(Vector));
@@ -362,14 +366,14 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 	Vector *v;
 	v = (Vector*)malloc(sizeof(Vector));
 	mycross(v, vxy, rxy);
-	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z;
-	elevation_velocity=(1/pow(range_topo_position->mag, 2))*((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*myangle(rxy, vxy)));
+
+	azimuth_velocity=(1/pow(rxy->mag, 2)) * v->z * (180/PI);
+	elevation_velocity=(1/pow(range_topo_position->mag, 2)) * ((rxy->mag*range_topo_velocity->z)-(range_topo_position->z/rxy->mag)*(rxy->mag*vxy->mag*cos(myangle(rxy, vxy)))) * (180/PI);
 	LA->azimuth = azimuth;
 	LA->azimuth_velocity = azimuth_velocity;
 	LA->elevation = elevation;
 	LA->elevation_velocity = elevation_velocity;
 }
-
 double linkstrength(double range){
 	double fre = 1575.42;
 	double eff = 0.7;

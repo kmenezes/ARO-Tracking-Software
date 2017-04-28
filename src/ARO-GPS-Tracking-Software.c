@@ -1,9 +1,3 @@
-/*
- * Main.c
- *
- *  Created on: Mar 19, 2017
- *      Author: A. Innanen
-*/
 
 #include <stdio.h>
 #include <math.h>

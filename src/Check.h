@@ -1,9 +1,3 @@
-/*
- * Check.h
- *
- *  Created on: Mar 12, 2017
- *      Author: K. Balachandran
- */
 
 #include "Vector.h"
 
