@@ -371,13 +371,13 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 }
 
 double linkstrength(double range){
-	double fre = 1227.0;
+	double fre = 1575.42;
 	double eff = 0.7;
 	double diam = 46;//m
 	double BW = 2.;
 	double RCV_gain = 56.;
 	double RCV_noise = 200.;
-	double light = 3*10^8; // m/s
+	double light = 299792458; // m/s
 
 	double EIRP = 8.3988; //3dBW
 	double La = 0.1; //dBW
