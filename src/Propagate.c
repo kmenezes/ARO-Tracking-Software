@@ -375,7 +375,7 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 	LA->elevation_velocity = elevation_velocity;
 }
 double linkstrength(double range){
-	double fre = 1575.42;
+	double fre = 1575.42; //MHz
 	double eff = 0.7;
 	double diam = 46;//m
 	double BW = 2.;

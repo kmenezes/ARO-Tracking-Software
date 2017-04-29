@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-int STKout(double *time, int size_time_array, char *filename, char CoordinateSystem[], Vector *position, Vector *velocity){
+int STKout(double *time, int size_time_array, char *filename,
+	char CoordinateSystem[], Vector *position, Vector *velocity){
 
 	FILE * fp;
 	fp = fopen (filename, "w+");
@@ -18,7 +19,7 @@ int STKout(double *time, int size_time_array, char *filename, char CoordinateSys
 	fprintf(fp, "\nBEGIN Ephemeris\n");
 	fprintf(fp,"\nNumberOfEphemerisPoints	%d\n", size_time_array);
 	// get number of rows in time matrix
-	fprintf(fp,"\nScenarioEpoch	%f\n", time[0]);
+	fprintf(fp,"\nScenarioEpoch            28 Apr 2017 17:00:00.000000\n");
 	fprintf(fp,"InterpolationMethod	Lagrange\n" );
 	fprintf(fp,"InterpolationOrder 7\n");
 	fprintf(fp, "CentralBody	Earth\n");
