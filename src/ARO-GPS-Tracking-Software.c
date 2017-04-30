@@ -16,13 +16,11 @@
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 int main(void){
-
     Banner();
     printf("\nImporting station data...\n\n");
     Station *stn = (Station*) malloc(sizeof(Station));
     ReadStationFile(stn, '0');
     printf("Complete\n\n");
-
     printf("Enter the number next to the corresponding option:\n");
     printf("1   view station file data\n");
     printf("2   continue\n\n");
@@ -59,13 +57,11 @@ int main(void){
 	printf("Entry: ");
 	fflush(stdout);
 	scanf("%d", &input2);
-
 	if(input2 == 1){
 	    printf("\nEnter the satellite number you would like to view: ");
 	    int num;
 	    fflush(stdout);
 	    scanf("%d", &num);
-
 	    printf("\nInformation for sat number %d\n", num);
 	    printf("\n    name is %s", sats[num].name);
 	    printf("    refepoch is %f\n", sats[num].refepoch);
@@ -83,7 +79,10 @@ int main(void){
 	if(input2 == 2){x++;}
     }
 
-    //AOS/LOS
+    //----------------------------- Link Signal Strength-------------------------------//
+    printf("\nOpening linkinfo.dat file...\n\n");
+    printf("Complete\n");
+    //------------------------------AOS/LOS----------------------------------------------//
 
     printf("\nOpening tracking file...\n\n");
     FILE *fp = fopen("tracking_sched.txt","r+");
@@ -108,7 +107,6 @@ int main(void){
     printf("Printing out the time step %s\n",time_step);
 
     printf("\nCalculating AOS and LOS...\n");
-
 
     double step;
     step = atof(time_step);
@@ -161,7 +159,6 @@ int main(void){
 	    station_ECF(stnPos, stn->stnlong, stn->stnlat, stn->stnalt);
 	    rtPos = (Vector*)malloc(sizeof(Vector));
 	    rtVel = (Vector*)malloc(sizeof(Vector));
-	    //range_ECF2topo(rtPos, rtVel, stn, ecfPos, ecfVel);
 	    range_ECF2topo(rtPos, rtVel, *stnPos, ecfPos, ecfVel, stn->stnlong, stn->stnlat);
 
 	    double az;
@@ -170,8 +167,7 @@ int main(void){
 	    double elV;
 	    LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
 	    range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
-
-	    ss[num] = linkstrength(rtPos->mag);
+	    ss[num] = linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z));
 	    if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
 
 		NUM[num] = j;
@@ -221,7 +217,7 @@ int main(void){
     FILE *xp;
     xp = fopen("TrackingData.txt", "w+");
     printf("\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
+    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange-Rate\t\tRange\t\tDoppler\t\tLevel\n");
     printf("\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
@@ -238,7 +234,7 @@ int main(void){
 
     //-----------------------------STKOUT Emphemeris------------------------------------------//
     FILE *stk;
-    stk = fopen("newSTKout.e", "w+");
+    stk = fopen("PRN23.e", "w+");
     fprintf(stk, "%s", "stk.v.11.0\n");
     fprintf(stk, "\nBEGIN Ephemeris\n");
     fprintf(stk,"\nNumberOfEphemerisPoints	%d\n", 30);
@@ -247,61 +243,26 @@ int main(void){
     char *EpochDat = jd2dat(JulianDateStart);
     //NOTE: MO is the number of the month as a character. mon is the number of the month as a double. MONTH is the month converted in to its
     // short form...Jan, Feb, Mar etc. In stk.e we actually end up printing MONTH.
-
     //Pull out the year, month, day etc. and put them in their arrays
-    strncpy(YR, EpochDat,4);
-    YR[4] = '\0';
-    strncpy(MO, EpochDat+5,2);
-    MO[2] = '\0';
-    strncpy(D, EpochDat+8,2);
-    D[2] = '\0';
-    strncpy(HR, EpochDat+11,2);
-    HR[2] = '\0';
-    strncpy(MIN, EpochDat+14,2);
-    MIN[2] = '\0';
-    strncpy(S, EpochDat+17,2);
-    S[2] = '\0';
-
+    strncpy(YR, EpochDat,4);YR[4] = '\0';
+    strncpy(MO, EpochDat+5,2);MO[2] = '\0';
+    strncpy(D, EpochDat+8,2);D[2] = '\0';
+    strncpy(HR, EpochDat+11,2); HR[2] = '\0';
+    strncpy(MIN, EpochDat+14,2);MIN[2] = '\0';
+    strncpy(S, EpochDat+17,2);S[2] = '\0';
     mon = atof(MO);
-
-    if(mon==1){
-	MONTH = "Jan";
-    }
-    if(mon==2){
-	MONTH = "Feb";
-    }
-    if(mon==3){
-	MONTH = "Mar";
-    }
-    if(mon==4){
-	MONTH = "Apr";
-    }
-    if(mon==5){
-	MONTH = "May";
-    }
-    if(mon==6){
-	MONTH = "Jun";
-    }
-    if(mon==7){
-	MONTH = "Jul";
-    }
-    if(mon==8){
-	MONTH = "Aug";
-    }
-    if(mon==9){
-	MONTH = "Sep";
-    }
-    if(mon==10){
-	MONTH = "Oct";
-    }
-    if(mon==11){
-	MONTH = "Nov";
-    }
-    if(mon==12){
-	MONTH = "Dec";
-    }
-
-
+    if(mon==1){MONTH = "Jan";}
+    if(mon==2){MONTH = "Feb";}
+    if(mon==3){MONTH = "Mar";}
+    if(mon==4){MONTH = "Apr";}
+    if(mon==5){MONTH = "May";}
+    if(mon==6){MONTH = "Jun";}
+    if(mon==7){MONTH = "Jul";}
+    if(mon==8){MONTH = "Aug";}
+    if(mon==9){MONTH = "Sep";}
+    if(mon==10){MONTH = "Oct";}
+    if(mon==11){MONTH = "Nov";}
+    if(mon==12){MONTH = "Dec";}
     fprintf(stk, "\nScenarioEpoch	%s %s %s %s:%s:%s\n", D, MONTH, YR, HR, MIN, S);
     fprintf(stk,"\nInterpolationMethod            Lagrange\n" );
     fprintf(stk,"\nInterpolationOrder            7\n");
@@ -352,18 +313,16 @@ int main(void){
 	LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
 	range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
 
-	//Doppler
+	//--------------------------------------------Doppler-----------------------------------------//
 	double R, v, c;
-
 	R=magntd(*rtPos);
 	v=(rtVel->x*rtPos->x+rtVel->y*rtPos->y+rtVel->z*rtPos->z)/R;
 	c=299792.458; //in km/s
+	ss[num] = linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z));
+	fD[num]=(-v/c)*ss[num];
+	//--------------------------------------------Doppler-----------------------------------------//
 
-	ss[num] = linkstrength(rtPos->mag);
-
-	fD[num]=(-v/c)*ss[num];///c);//*ss[num];
-
-	printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t%f\t%f\n", jd2dat(currentTime),fixangdeg(LA->azimuth),fixangdeg(LA->elevation),LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z), fD[num], linkstrength(rtPos->mag));
+	printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t%f\t%f\n", jd2dat(currentTime),fixangdeg(LA->azimuth),fixangdeg(LA->elevation),LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z), fD[num], linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z)));
 
 	//Tracking Data
 	double AZfix, ELfix;

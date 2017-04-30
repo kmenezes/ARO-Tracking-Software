@@ -1,9 +1,15 @@
+/*
+ * This module defines all the matrix functions needed for the tracking application.
+ * */
 #include "Matrix.h"
 #include "Vector.h"
 #include <Math.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+/*
+ * Initializes an m x n matrix (array) filled with zeros.
+ *
+ * */
 int zero(Matrix *M,int m,int n){
 	M->elem = (double **)calloc(m,sizeof(double));
 	int count = 0;
@@ -16,6 +22,11 @@ int zero(Matrix *M,int m,int n){
 	M->column = n;
 	return 0;
 }
+/*
+ * Calculates an m x n array (matrix) which is the product of M1 (m x p) and M2 (p x n) –
+ * note that the size of the M1 (# of columns) must match the size of M2 (# of rows).
+ *
+ * */
 int mult(Matrix *M3,Matrix *M1 ,Matrix *M2){
 	int jm = M1->row;
 	int jn = M2->column;

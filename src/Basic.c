@@ -1,4 +1,7 @@
-
+/*
+ * Introduction to C and the course
+ *
+ * */
 #include "Basic.h"
 #include <Math.h>
 #include <stdlib.h>
@@ -18,7 +21,6 @@ double sinm1(double ARG){
 	return asin(ARG);
 }
 
-
 /*
  * Returns the arccosine of ARG when ARG<=1
  * Returns 0 when ARG>=1
@@ -33,7 +35,6 @@ double cosm1(double ARG){
 	}
 	return acos(ARG);
 }
-
 
 /*
  * Returns the fractional part of ARG
@@ -51,7 +52,6 @@ double frac(double ARG){
 	}
 	return ARG;
 }
-
 /*
  * Reduces angles greater than 2Pi
  */
@@ -85,6 +85,4 @@ double fixangdeg(double ang_in){
 	}
 	return ang_in;
 }
-
-
 

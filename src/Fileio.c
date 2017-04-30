@@ -1,10 +1,15 @@
-
+/*
+ * This module defines all functions needed to display outputs and read in inputs.
+ */
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "FileIO.h"
+/*
+ * Prints the ENG4350 team info, program name, date, version and welcome message.
+ * */
 void Banner(){
 	printf("\n -------------------- \n");
 	printf("ENG4350 Team Info:\n");
@@ -22,14 +27,26 @@ void Banner(){
 	printf("Welcome\n");
 	printf("\n -------------------- \n");
 }
+/*
+ *"beeps" the terminal, displays an error message STRING and exits.
+ * */
 void ERRMSG (char* STRING){
 	printf("\a\n");
 	printf("%s\n", STRING);
 	exit(0);
 }
+/*
+ * Halts program execution until user presses Enter.
+ * */
 void anykey(){
 system("pause");
 }
+/*
+ * Returns a struct with the parameters defined below. This function reads the station
+ * parameters file and returns the values in degrees and meters for geographical coordinates,
+ * degrees for az/el limits and deg/min for maximum az/el speeds.
+ *
+ * */
 int ReadStationFile(Station *Stn, char STNFIL) {
 	char name[128];
 	char *name_ptr;
@@ -49,8 +66,7 @@ int ReadStationFile(Station *Stn, char STNFIL) {
 	double st_az_speed_max_struct;
 	char st_el_speed_max[128];
 	double st_el_speed_max_struct;
-	FILE *fp =
-			fopen(".\\station_file.dat","r+");
+	FILE *fp = fopen(".\\station_file.dat","r+");
 	int switch_param = 0;
 	char currChar;
 	int i;
@@ -124,8 +140,10 @@ int ReadStationFile(Station *Stn, char STNFIL) {
 		Stn->st_el_speed_max = st_az_speed_max_struct;
 	}
 }
-
-
+/*
+ * Reads all 32 satellites from the gps-ops.txt
+ *
+ * */
 int ReadNoradTLE(Satellite sats[], char *file) {
 	FILE *fp = fopen(file,"r+");
 	for (int i = 0; i < 32; i++) {
@@ -134,7 +152,11 @@ int ReadNoradTLE(Satellite sats[], char *file) {
 	fclose(fp);
 	return 0;
 }
-
+/*
+ * This function reads 3 lines (the last two are in TLE format) and determines orbital
+ * variables for the satellite.
+ *
+ * */
 int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 
 	enum params1 {
@@ -144,7 +166,6 @@ int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 		INT_DES_1,
 		INT_DES_2,
 		INT_DES_3,
-		//EPOCH_YEAR,
 		EPOCH,
 		MEAN_DOT,
 		MEAN_2_DOT,
@@ -174,8 +195,6 @@ int ReadSingleNoradTLE(Satellite *sat, FILE *fp) {
 		{  9, 11 }, //4
 		{ 11, 14 }, //5
 		{ 14, 17 }, //6
-		//{ 18, 20 },
-		//{ 20, 32 },
 		{ 18, 32 }, //7
 		{ 33, 43 }, //8
 		{ 44, 52 }, //9
