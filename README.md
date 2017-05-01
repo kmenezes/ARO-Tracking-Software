@@ -1,12 +1,15 @@
 # ARO-Tracking-Software
 GPS Satellite tracking software using the Algonquin Radio Observatory (ARO) developed in C.
-![ARO](http://kmenezes.github.io/ARO-Tracking-Software/docs/ARO.jpg)
+
+![ARO](http://kmenezes.github.io/ARO-Tracking-Software/docs/ARO.JPG)
+
 ## Getting Started
 * You must have a C compiler IDE on your machine/computer.
 
 ## Prerequisites
 This software package takes 3 inputs:
 1. The **North American Aerospace Defense Command [Two-Line-Element](https://www.celestrak.com/columns/v04n03/)** of the 32 GPS-operational satellites from [Celestrak](https://www.celestrak.com/NORAD/elements/). The format is below:
+
 ![](http://kmenezes.github.io/ARO-Tracking-Software/docs/TLE.jpg)
 
 2. **Tracking Schedule.** The start/stop date and time as well as the time step in a text file. As seen below:
@@ -51,9 +54,9 @@ The TrackingData.txt file is uploaded to the ARO dish via ftp site.
 |            | Time                | Azimuth degrees  | Elevation degrees | Az-Rate  | El-Rate  | Range (km)  | Doppler Shift (kHz) | Signal Level (dBm) |
 |------------|---------------------|----------|-----------|----------|----------|-------------|---------------------|--------------------|
 | Software   | 2017-05-03 14:29    | 305.477  | 25.375    | 0.001022 | 0.006557 | 23486.77744 | 3.227356            | -139.215           |
-| STK        | 2017-05-03 14:28:59 | 305.4773 | 25.37563  | 0.001022 | 0.006557 | 23486.70615 | 3.227376            | -140.804369        |
+| [STK](www.agi.com)       | 2017-05-03 14:28:59 | 305.4773 | 25.37563  | 0.001022 | 0.006557 | 23486.70615 | 3.227376            | -140.804369        |
 | Difference | 1 second            | 0.000262 | 0.000631  | 0        | 0        | -0.071284   | 2E-05               | -1.589369          |
-![Proof of Accuracies]((http://kmenezes.github.io/ARO-Tracking-Software/docs/spacehardware.PNG)
+![Proof of Accuracies](http://kmenezes.github.io/ARO-Tracking-Software/docs/spacehardware.PNG)
 
 ### Outcomes
 The outcomes of developing this software was:
@@ -66,7 +69,7 @@ The outcomes of developing this software was:
 - [Keith Menezes](http://keithmenezes.ca)
 - James Brook
 
-### Development Readme's
+### Development Documentation
 Version 5 - Check the updates April 2nd 2017
 [ENG-4350-P5-JK.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P5-JK.pdf)
 
@@ -75,3 +78,5 @@ Version 4 - Check the updates March 26th 2017
 
 Version 3 - Check the updates below March 19th, 2017
 [ENG-4350-P3-James-Keith.pdf](http://kmenezes.github.io/ARO-Tracking-Software/docs/ENG-4350-P3-James-Keith.pdf)
+
+### License
