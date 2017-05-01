@@ -427,7 +427,7 @@ int main(void){
     FILE *xp;
     xp = fopen("TrackingData.txt", "w+");
     printf("\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange-Rate\t\tRange\t\tDoppler\t\tLevel\n");
+    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
     printf("\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
@@ -524,14 +524,14 @@ int main(void){
 	range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
 
 	//--------------------------------------------Doppler-----------------------------------------//
-	double R, v, c;
-	R=magntd(*rtPos);
-	v=(rtVel->x*rtPos->x+rtVel->y*rtPos->y+rtVel->z*rtPos->z)/R;
+	double R, v, c, freq;
+	R = magntd(*rtPos); //magnitude of the topocentric range coordinates
+	v = (rtVel->x*rtPos->x+rtVel->y*rtPos->y+rtVel->z*rtPos->z)/R;
 	c=299792.458; //in km/s
+	freq = 1575.42*1000; // kHz
 	ss[num] = linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z));
-	fD[num]=(-v/c)*ss[num];
+	fD[num]=(-v/c)*freq; //in kHz
 	//--------------------------------------------Doppler-----------------------------------------//
-
 	printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t%f\t%f\n", jd2dat(currentTime),fixangdeg(LA->azimuth),fixangdeg(LA->elevation),LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z), fD[num], linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z)));
 
 	//Tracking Data
