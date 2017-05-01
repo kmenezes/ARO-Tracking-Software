@@ -1,6 +1,6 @@
 # ARO-Tracking-Software
 GPS Satellite tracking software using the Algonquin Radio Observatory (ARO) developed in C.
-
+![ARO](http://kmenezes.github.io/ARO-Tracking-Software/docs/ARO.jpg)
 ## Getting Started
 * You must have a C compiler IDE on your machine/computer.
 
@@ -48,11 +48,12 @@ For specific format see actual file [here](https://github.com/kmenezes/ARO-Track
 The TrackingData.txt file is uploaded to the ARO dish via ftp site.
 
 ## Accuracies
-| Parameter | Accuracy     |
-| :------------- | :------------- |
-| Signal Level   | 1-2 dBm     |
-|  Angles      |    0.01 degrees   |
-| Angle rate-of-change | perfect |
+|            | Time                | Azimuth degrees  | Elevation degrees | Az-Rate  | El-Rate  | Range (km)  | Doppler Shift (kHz) | Signal Level (dBm) |
+|------------|---------------------|----------|-----------|----------|----------|-------------|---------------------|--------------------|
+| Software   | 2017-05-03 14:29    | 305.477  | 25.375    | 0.001022 | 0.006557 | 23486.77744 | 3.227356            | -139.215           |
+| STK        | 2017-05-03 14:28:59 | 305.4773 | 25.37563  | 0.001022 | 0.006557 | 23486.70615 | 3.227376            | -140.804369        |
+| Difference | 1 second            | 0.000262 | 0.000631  | 0        | 0        | -0.071284   | 2E-05               | -1.589369          |
+![Proof of Accuracies]((http://kmenezes.github.io/ARO-Tracking-Software/docs/spacehardware.PNG)
 
 ### Outcomes
 The outcomes of developing this software was:
