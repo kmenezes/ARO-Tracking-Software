@@ -1,5 +1,5 @@
 # ARO-Tracking-Software
-GPS Satellite tracking software using the Algonquin Radio Observatory (ARO) developed in C.
+GPS Satellite tracking software using the Algonquin Radio Observatory (ARO) developed in C with around *1761* lines of source code.
 
 ![ARO](http://kmenezes.github.io/ARO-Tracking-Software/docs/ARO.JPG)
 
