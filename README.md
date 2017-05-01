@@ -60,6 +60,8 @@ The TrackingData.txt file is uploaded to the ARO dish via ftp site where the tra
 ### Debugging in AGI's STK
 ![Proof of Accuracies](http://kmenezes.github.io/ARO-Tracking-Software/docs/spacehardware.PNG)
 
+**Note that this was calculated with a 2 day old TLE**
+
 ### Outcomes
 The outcomes of developing this software was:
 * Demonstrating an example of a complete software project using C.
