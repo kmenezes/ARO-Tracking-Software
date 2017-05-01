@@ -48,14 +48,16 @@ For specific format see actual file [here](https://github.com/kmenezes/ARO-Track
   * Ephemeris file '.e' for debugging in [STK](www.agi.com)
 
 ## Post Run-Time
-The TrackingData.txt file is uploaded to the ARO dish via ftp site.
+The TrackingData.txt file is uploaded to the ARO dish via ftp site where the tracking is done.
 
-## Accuracies
+## Analysis of Accuracies
 |            | Time                | Azimuth degrees  | Elevation degrees | Az-Rate  | El-Rate  | Range (km)  | Doppler Shift (kHz) | Signal Level (dBm) |
 |------------|---------------------|----------|-----------|----------|----------|-------------|---------------------|--------------------|
 | Software   | 2017-05-03 14:29    | 305.477  | 25.375    | 0.001022 | 0.006557 | 23486.77744 | 3.227356            | -139.215           |
 | [STK](www.agi.com)       | 2017-05-03 14:28:59 | 305.4773 | 25.37563  | 0.001022 | 0.006557 | 23486.70615 | 3.227376            | -140.804369        |
 | Difference | 1 second            | 0.000262 | 0.000631  | 0        | 0        | -0.071284   | 2E-05               | -1.589369          |
+
+### Debugging in AGI's STK
 ![Proof of Accuracies](http://kmenezes.github.io/ARO-Tracking-Software/docs/spacehardware.PNG)
 
 ### Outcomes
