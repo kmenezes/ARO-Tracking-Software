@@ -46,7 +46,7 @@ int main(void){
 	    printf("11 Station Elevation Speed Max: %f\n", stn->st_el_speed_max);
 	}
 	if(input1 == 2){
-	  //  printf("\n1 name\n");
+	    //  printf("\n1 name\n");
 	    printf("2 stnlat\n");
 	    printf("3 stnlong\n");
 	    printf("4 stnalt\n");
@@ -62,7 +62,7 @@ int main(void){
 	    fflush(stdout);
 	    scanf("%d", &num2);
 	    printf("\n");
-/*	    if(num2 == 1){
+	    /*	    if(num2 == 1){
 		printf("name entry: ");
 		char *n;
 		fflush(stdout);
@@ -378,8 +378,8 @@ int main(void){
 	    LookAngles *LA =(LookAngles*) malloc(sizeof(LookAngles));
 	    range_topo2look_angles(LA, az, el, azV, elV, rtPos, rtVel);
 	    ss[num] = linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z));
-	    if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){//Go in to this loop if the satellite is acquired.
-
+	    if (LA->elevation <= stn->az_el_lim.elmax && LA->elevation >= stn->az_el_lim.elmin && acquired == 0){
+		//Go in to this loop if the satellite is acquired.
 		NUM[num] = j;
 		NAME[num] = sats[j].name;
 		NAME[num][strlen(NAME[num])-1] = '\0';
@@ -387,10 +387,13 @@ int main(void){
 		AOS[num] = currentTime;
 		acquired = 1;
 	    }
-	    if(LA->elevation >= stn->az_el_lim.elmax && LA->elevation <= stn->az_el_lim.elmin && acquired==1){// Go in to this loop if the satellite is lost.
-		LOS[num] = currentTime;
-		lost = 1;
-		break;
+	    if(LA->elevation >= stn->az_el_lim.elmax || LA->elevation <= stn->az_el_lim.elmin){
+		// Go in to this loop if the satellite is lost.
+		if(acquired == 1){
+		    LOS[num] = currentTime;
+		    lost = 1;
+		    break;
+		}
 	    }
 	}
 	if(acquired==1)
@@ -425,17 +428,17 @@ int main(void){
     scanf("%d", &satNum);
     Satellite sat = sats[satNum];
     FILE *xp;
-    xp = fopen("TrackingData.txt", "w+");
+    xp = fopen("TrackingData-James-Keith.txt", "w+");
     printf("\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\t\tDoppler\t\tLevel\n");
+    printf("UTC\t\t\tAZ\t\tEL\t\tAZ-vel\t\tEL-vel\t\tRange\t\tRange-Rate\tDoppler\t\tLevel\n");
     printf("\t\t\tdeg\t\tdeg\t\tdeg/sec\t\tdeg/sec\t\tkm\t\tkm/sec\t\t\tkHz\t\tdbm\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    fprintf(xp,"#Any comment and/or header\n");
-    fprintf(xp,"# Station: %s Tracking Orbit for the %s\n", stn->name, sat.name);
-    fprintf(xp,"-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    // fprintf(xp,"#Any comment and/or header\n");
+    //  fprintf(xp,"# Station: %s Tracking Orbit for the %s\n", stn->name, sat.name);
+    // fprintf(xp,"#-----------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     fprintf(xp,"# UTC Date/Time   Azimuth and AZ_Velocity   Elevation and EL_Velocity\n");
-    fprintf(xp,"YYYY.DOY.HH.MM.SS AZd AZm AZ.s AZ.Vel       ELd ELm EL.s EL.Vel\n");
+    //  fprintf(xp,"#YYYY.DOY.HH:MM:SS AZd AZm AZ.s AZ.Vel       ELd ELm EL.s EL.Vel\n");
 
     double currentTime;
     currentTime = JulianDateStart;
@@ -532,7 +535,7 @@ int main(void){
 	ss[num] = linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z));
 	fD[num]=(-v/c)*freq; //in kHz
 	//--------------------------------------------Doppler-----------------------------------------//
-	printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t\t%f\t%f\n", jd2dat(currentTime),fixangdeg(LA->azimuth),fixangdeg(LA->elevation),LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z), fD[num], linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z)));
+	printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", jd2dat(currentTime),fixangdeg(LA->azimuth),fixangdeg(LA->elevation),LA->azimuth_velocity,LA->elevation_velocity,sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z),sqrt(rtVel->x*rtVel->x+rtVel->y*rtVel->y+rtVel->z*rtVel->z), fD[num], linkstrength(sqrt(rtPos->x*rtPos->x+rtPos->y*rtPos->y+rtPos->z*rtPos->z)));
 
 	//Tracking Data
 	double AZfix, ELfix;
@@ -581,8 +584,8 @@ int main(void){
 	mm = atof(MIN);
 	se = atof(S);
 	DOY = doy(year, mon, day);// Get the day of the year from the year, month and day
-	fprintf(xp,"%.0f.%03.0f.%02.0f.%02.0f.%02.0f %03.0f %02.0f  %03.1f %03.6f\t\t%03.0f %02.0f  %03.1f %03.6f\n", year, DOY, hh, mm, se, AZd, AZm, AZs, LA->azimuth_velocity, ELd, ELm, ELs, LA->elevation_velocity);
-
+	fprintf(xp,"%.0f.%03.0f.%02.0f:%02.0f:%02.0f %03.0f %02.0f %03.1f %03.1f %03.0f %02.0f %03.1f %03.1f\n", year, DOY, hh, mm, se, AZd, AZm, AZs, LA->azimuth_velocity, ELd, ELm, ELs, LA->elevation_velocity);
+	//%s %5s%s %2s%3s%3s %2d%f %f %6f%f %6f%f %d %5s\n%s %s %f %f %s %f %f %10f%s\n
     }
     fclose(fp);
     fprintf(stk, "\nEND Ephemeris\n");

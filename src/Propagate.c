@@ -347,14 +347,20 @@ void range_topo2look_angles(LookAngles *LA, double azimuth, double elevation, do
 }
 /*
  * Calculate link signal strength
- *
  */
 double linkstrength(double range){
     double fre = 1575.42; //MHz
-    //dBi from website http://gpsinformation.net/main/gpspower.htm
-    double TXsat = 13;
+    double eff = 0.5; // Efficiency of ARO
+    double D = 46; // Diameter of ARO
+    double c = 3*pow(10,8); //speed of light
+    double Pt = 11.3988; //dBi from website http://gpsinformation.net/main/gpspower.htm
+    double Gt = 13; //dB Gain of the GPS Satellite Transmitter
+    double Ll = -2.1; //estimation of the transmitter line loss
+    double EIRP = Pt + Ll + Gt;
     //http://www.radio-electronics.com/info/propagation/path-loss/free-space-formula-equation.php
-    double FSPL = 20*log10(range) + 20*log10(fre) + 32.44;
-    double linksstren = TXsat - FSPL +30;
+    double La = -0.3; //atmospheric loss from 'rain/atmospheric attenuation graph' in lecture
+    double Ls = 10*log10(pow((c/(4*PI*fre*range*1000)),2)); //space loss
+    double Gr = 10*log10((((PI*PI)*(fre*fre)*(D*D) *eff)/(c*c))); //Receive gain
+    double linksstren = EIRP + La +Gr +Ls+ 30;
     return linksstren;
 }
